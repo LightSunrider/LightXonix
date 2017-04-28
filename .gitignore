@@ -1,0 +1,33 @@
+# OS's files and directories
+#  Windows
+$RECYCLE.BIN/
+Thumbs.db
+Desktop.ini
+*.lnk
+#  Linux
+.directory
+.Trash-*
+.nfs*
+
+
+# IDE's files and directories
+#  Visual Studio
+/.vs/
+#  KDevelop
+/*.kdev4
+/.kdev4/
+/build/
+#  CLion
+/cmake-build-debug/
+/.idea/
+
+# Directory for compiled binaries
+/binary/
+# Directory for cmake-generated build files
+/build/
+# Directory for cmake-generated project files
+/project/
+# Q: What is the difference between '/build/' and '/project/'?
+# A: It's simple.
+#    '/build/' for the build scripts (e.g. Makefile)
+#    '/project/' for the IDE project files (e.g. KDevelop)

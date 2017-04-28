@@ -1,0 +1,22 @@
+﻿---
+BasedOnStyle: LLVM
+AccessModifierOffset: '-4'
+AlignAfterOpenBracket: Align
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+BreakBeforeBraces: Attach
+BreakBeforeTernaryOperators: 'true'
+ColumnLimit: '120'
+DerivePointerAlignment: 'true'
+IndentWidth: '4'
+Language: Cpp
+MaxEmptyLinesToKeep: '2'
+NamespaceIndentation: Inner
+PenaltyBreakBeforeFirstCallParameter: '0'
+SpacesBeforeTrailingComments: '0'
+Standard: Auto
+TabWidth: '4'
+UseTab: Never
+
+...
