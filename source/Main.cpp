@@ -1,9 +1,9 @@
-#include <iostream>
-
-using namespace std;
+#include "LightXonix.hpp"
 
 signed main() {
-    cout << "o/" << endl;
+    LightXonix game;
+
+    game.Run();
 
     return 0;
 }
