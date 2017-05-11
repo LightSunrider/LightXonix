@@ -21,6 +21,26 @@ GameWindow::GameWindow(GameWindowSettings settings) {
     setSettings(settings);
 }
 
+void GameWindow::PollEvents() {
+    glfwPollEvents();
+}
+
+void GameWindow::Close() {
+    glfwWindowShouldClose(m_GlfwWindow);
+}
+
+void GameWindow::MakeContextCurrent() {
+    glfwMakeContextCurrent(m_GlfwWindow);
+}
+
+void GameWindow::SwapBuffers() {
+    glfwSwapBuffers(m_GlfwWindow);
+}
+
+bool GameWindow::ShouldClose() {
+    return (bool) glfwWindowShouldClose(m_GlfwWindow);
+}
+
 void GameWindow::setSettings(GameWindowSettings settings) {
     glfwInit();
     if (m_GlfwWindow == nullptr) {
@@ -33,10 +53,4 @@ void GameWindow::setSettings(GameWindowSettings settings) {
 
     glfwSetWindowSize(m_GlfwWindow, m_Width, m_Height);
     glfwSetWindowTitle(m_GlfwWindow, m_Title);
-}
-
-void GameWindow::Close() {
-    m_ShouldClose = true;
-
-    glfwWindowShouldClose(m_GlfwWindow);
 }
