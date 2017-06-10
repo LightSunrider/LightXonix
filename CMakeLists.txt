@@ -56,13 +56,11 @@ target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARIES})
 
 # GLEW
 find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${GLEW_LIBRARY})
-add_definitions("-DGLEW_STATIC")
+target_link_libraries(${EXECUTABLE_NAME} GLEW::glew_s)
 
 # glm
 find_package(glm REQUIRED)
-include_directories(${glm_INCLUDE_DIRS})
+target_link_libraries(${EXECUTABLE_NAME} glm)
 
 
 # Install target
