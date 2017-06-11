@@ -18,5 +18,5 @@ SpacesBeforeTrailingComments: '0'
 Standard: Auto
 TabWidth: '4'
 UseTab: Never
-
+SpaceAfterCStyleCast: true
 ...

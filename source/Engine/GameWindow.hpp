@@ -4,9 +4,9 @@ struct GLFWwindow;
 
 struct GameWindowSettings {
     int Width = 800, Height = 600;
-    char *Title = (char *)"";
+    char *Title = (char *) "";
 
-    GameWindowSettings(){}
+    GameWindowSettings() {}
 };
 
 class GameWindow {

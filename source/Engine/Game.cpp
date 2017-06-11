@@ -10,13 +10,12 @@ void Game::Run() {
     Initialize();
     LoadContent();
 
-    long lastFrame = clock(),
-        currentFrame;
+    long lastFrame = clock(), currentFrame;
     float delta = 0.0f;
 
     while (!Window.ShouldClose()) {
         currentFrame = clock();
-        delta = (float) (currentFrame-lastFrame) / 1000;
+        delta = (float) (currentFrame - lastFrame) / 1000;
         Update(delta);
         Window.MakeContextCurrent();
         Draw(delta);
