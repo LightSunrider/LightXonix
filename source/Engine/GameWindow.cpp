@@ -1,5 +1,14 @@
 #include "Engine/GameWindow.hpp"
 #include <GLFW/glfw3.h>
+#include <gl/glew.h>
+
+bool GameWindow::s_LibrariesInitalized = false;
+
+GameWindow::GameWindow() {
+    GameWindowSettings settings;
+
+    createWindow(settings);
+}
 
 GameWindow::GameWindow(int Width, int Height, char *Title) {
     GameWindowSettings settings;
@@ -8,17 +17,11 @@ GameWindow::GameWindow(int Width, int Height, char *Title) {
     settings.Height = Height;
     settings.Title = Title;
 
-    setSettings(settings);
-}
-
-GameWindow::GameWindow() {
-    GameWindowSettings settings;
-
-    setSettings(settings);
+    createWindow(settings);
 }
 
 GameWindow::GameWindow(GameWindowSettings settings) {
-    setSettings(settings);
+    createWindow(settings);
 }
 
 void GameWindow::PollEvents() {
@@ -41,16 +44,38 @@ bool GameWindow::ShouldClose() {
     return (bool) glfwWindowShouldClose(m_GlfwWindow);
 }
 
-void GameWindow::setSettings(GameWindowSettings settings) {
-    glfwInit();
-    if (m_GlfwWindow == nullptr) {
-        m_GlfwWindow = glfwCreateWindow(800, 600, "", NULL, NULL);
+void GameWindow::createWindow(GameWindowSettings settings) {
+    // GLFW initialization
+    if (s_LibrariesInitalized == false) {
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     }
 
-    m_Width = settings.Width;
-    m_Height = settings.Height;
-    m_Title = settings.Title;
+    m_GlfwWindow = glfwCreateWindow(settings.Width, settings.Height, settings.Title, NULL, NULL);
+    MakeContextCurrent();
 
-    glfwSetWindowSize(m_GlfwWindow, m_Width, m_Height);
-    glfwSetWindowTitle(m_GlfwWindow, m_Title);
+    // GLEW initialization
+    if (s_LibrariesInitalized == false) {
+        glewExperimental = GL_TRUE;
+        glewInit();
+
+        s_LibrariesInitalized = true;
+    }
+
+    updateSettings(settings);
+}
+
+void GameWindow::updateSettings(GameWindowSettings settings) {
+    if (m_Settings.Width != settings.Width || m_Settings.Height != settings.Height) {
+        glfwSetWindowSize(m_GlfwWindow, settings.Width, settings.Height);
+    }
+
+    if (m_Settings.Title != settings.Title) {
+        glfwSetWindowTitle(m_GlfwWindow, settings.Title);
+    }
+
+    m_Settings = settings;
 }

@@ -22,10 +22,12 @@ public:
     bool ShouldClose();
 
 private:
+    static bool s_LibrariesInitalized;
+
     GLFWwindow *m_GlfwWindow = nullptr;
 
-    int m_Width, m_Height;
-    char *m_Title;
+    GameWindowSettings m_Settings;
 
-    void setSettings(GameWindowSettings settings);
+    void createWindow(GameWindowSettings settings);
+    void updateSettings(GameWindowSettings settings);
 };
