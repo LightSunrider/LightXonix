@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.8)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -16,20 +16,18 @@ include_directories("${PROJECT_SOURCE_DIR}/source/")
 # Source files
 set(Index_SOURCE_CODE
     "source/Main.cpp"
-    "source/LightXonix.hpp"
 )
-source_group("Game" FILES ${Index_SOURCE_CODE})
 
 set(Engine_SOURCE_CODE
-    "source/Engine/Game.cpp"
-    "source/Engine/Game.hpp"
-
     "source/Engine/GameWindow.cpp"
     "source/Engine/GameWindow.hpp"
+
+    "source/Engine/Shader.cpp"
+    "source/Engine/Shader.hpp"
 )
-source_group("Engine" FILES ${Engine_SOURCE_CODE})
 
 set(SOURCE_CODE ${Index_SOURCE_CODE} ${Engine_SOURCE_CODE})
+source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 
 # Resource files
 set(Shaders_RESOURCES
@@ -37,11 +35,14 @@ set(Shaders_RESOURCES
     "resources/Shaders/simple.frag"
 )
 
-source_group("Resources\\Shaders" FILES ${Shaders_RESOURCES})
-
 set(PROJECT_RESOURCES ${Shaders_RESOURCES})
+source_group(TREE "${PROJECT_SOURCE_DIR}/resources" PREFIX "resources" FILES ${PROJECT_RESOURCES})
 
 add_executable(${EXECUTABLE_NAME} ${SOURCE_CODE} ${PROJECT_RESOURCES})
+set_target_properties(${EXECUTABLE_NAME} PROPERTIES 
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/resources/"
+    VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/resources/"
+)
 # ------------
 
 # GLFW
@@ -70,7 +71,7 @@ option(CLANG_FORMAT_TARGET "Initialize Clang_Format target" OFF)
 if(${CLANG_FORMAT_TARGET})
     find_program(CLANG_FORMAT_EXE "clang-format")
     if (CLANG_FORMAT_EXE)
-        file(GLOB_RECURSE ALL_CXX_SOURCE_FILES *.[chi]pp *.[chi]xx *.cc *.hh *.ii *.[CHI])
+        file(GLOB_RECURSE ALL_CXX_SOURCE_FILES *.[chi]pp *.[chi]xx *.cc *.hh *.ii *.[CHI] *.frag *.vert)
         add_custom_target("CLANG_FORMAT" COMMAND "clang-format" -i -style=file ${ALL_CXX_SOURCE_FILES})
         set_property(TARGET "CLANG_FORMAT" PROPERTY FOLDER "CMake")
     endif ()

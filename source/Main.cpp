@@ -1,4 +1,4 @@
-#include "Engine/Game.hpp"
+#include "Engine/GameWindow.hpp"
 #include "Engine/Shader.hpp"
 #include <ctime>
 #include <iostream>
