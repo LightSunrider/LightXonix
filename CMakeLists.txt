@@ -14,28 +14,27 @@ set(EXECUTABLE_NAME "LightXonix")
 include_directories("${PROJECT_SOURCE_DIR}/source/")
 
 # Source files
-set(Index_SOURCE_CODE
+set(SOURCE_CODE 
     "source/Main.cpp"
-)
 
-set(Engine_SOURCE_CODE
+    "source/Engine/Engine.hpp"
+
     "source/Engine/GameWindow.cpp"
     "source/Engine/GameWindow.hpp"
 
     "source/Engine/Shader.cpp"
     "source/Engine/Shader.hpp"
-)
 
-set(SOURCE_CODE ${Index_SOURCE_CODE} ${Engine_SOURCE_CODE})
+    "source/Engine/Exception.hpp"
+)
 source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 
 # Resource files
-set(Shaders_RESOURCES
+set(PROJECT_RESOURCES
+    #Shaders
     "resources/Shaders/simple.vert"
     "resources/Shaders/simple.frag"
 )
-
-set(PROJECT_RESOURCES ${Shaders_RESOURCES})
 source_group(TREE "${PROJECT_SOURCE_DIR}/resources" PREFIX "resources" FILES ${PROJECT_RESOURCES})
 
 add_executable(${EXECUTABLE_NAME} ${SOURCE_CODE} ${PROJECT_RESOURCES})
