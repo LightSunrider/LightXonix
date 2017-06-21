@@ -18,6 +18,7 @@ set(SOURCE_CODE
     "source/Main.cpp"
 
     "source/Engine/Engine.hpp"
+    "source/Engine/Types.hpp"
 
     "source/Engine/GameWindow.cpp"
     "source/Engine/GameWindow.hpp"
@@ -26,6 +27,9 @@ set(SOURCE_CODE
     "source/Engine/Shader.hpp"
 
     "source/Engine/Exception.hpp"
+
+    "source/Engine/Texture.cpp"
+    "source/Engine/Texture.hpp"
 )
 source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 
