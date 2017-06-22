@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {
+Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     std::string vertexCode;
@@ -27,11 +27,12 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {
 
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
-    } catch (std::ifstream::failure e) {
+    }
+    catch (std::ifstream::failure e) {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
-    const GLchar* vShaderCode = vertexCode.c_str();
-    const GLchar* fShaderCode = fragmentCode.c_str();
+    const GLchar *vShaderCode = vertexCode.c_str();
+    const GLchar *fShaderCode = fragmentCode.c_str();
 
     GLuint vertex, fragment;
     GLint success;

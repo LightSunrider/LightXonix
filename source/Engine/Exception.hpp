@@ -7,9 +7,9 @@ public:
     Exception() {
         Message = "";
     }
-    Exception(const char* message) {
+    Exception(const char *message) {
         Message = message;
     }
 
-    const char* Message;
+    const char *Message;
 };

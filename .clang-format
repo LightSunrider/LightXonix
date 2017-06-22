@@ -5,7 +5,19 @@ AlignAfterOpenBracket: Align
 AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
 AllowShortFunctionsOnASingleLine: Empty
-BreakBeforeBraces: Attach
+BraceWrapping:
+  AfterClass:      false
+  AfterControlStatement: false
+  AfterEnum:       false
+  AfterFunction:   false
+  AfterNamespace:  false
+  AfterObjCDeclaration: false
+  AfterStruct:     false
+  AfterUnion:      false
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
+BreakBeforeBraces: Custom
 BreakBeforeTernaryOperators: 'true'
 ColumnLimit: '120'
 DerivePointerAlignment: 'true'

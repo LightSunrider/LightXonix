@@ -1,10 +1,10 @@
 #version 330 core
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 color;
+layout(location = 0) in vec3 Position;
+layout(location = 1) in vec2 InvertedUV;
 
-out vec3 ourColor;
+out vec2 UV;
 
 void main() {
-    gl_Position = vec4(position, 1.0f);
-    ourColor = color;
+    gl_Position = vec4(Position, 1.0f);
+    UV = vec2(InvertedUV.x, 1.0 - InvertedUV.y);
 }
