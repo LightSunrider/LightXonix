@@ -10,8 +10,8 @@ public:
 
     GLuint& Id = m_Id;
 
-    uint &Width = m_Width;
-    uint &Height = m_Height;
+    uint& Width = m_Width;
+    uint& Height = m_Height;
 
 
     enum class Error { UNKNOWN, FILE_NOT_FOUND, BAD_FILE, UNSUPPORTED_FILE_TYPE };
@@ -42,20 +42,20 @@ private:
     };
 
     struct DDS_HEADER {
-        uint           size;
-        uint           flags;
-        uint           height;
-        uint           width;
-        uint           pitchOrLinearSize;
-        uint           depth;
-        uint           mipMapCount;
-        uint           _dwReserved1[11];
+        uint size;
+        uint flags;
+        uint height;
+        uint width;
+        uint pitchOrLinearSize;
+        uint depth;
+        uint mipMapCount;
+        uint _dwReserved1[11];
         DDS_PIXELFORMAT pf;
-        uint           caps;
-        uint           caps2;
-        uint           caps3;
-        uint           caps4;
-        uint           _dwReserved2;
+        uint caps;
+        uint caps2;
+        uint caps3;
+        uint caps4;
+        uint _dwReserved2;
     };
 
     void ddsLoadUncompressed(DDS_HEADER header, std::basic_ifstream<byte>* fs);

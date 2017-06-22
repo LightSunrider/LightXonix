@@ -25,15 +25,12 @@ Texture::Texture(const char* path) {
         throw TextureException(Error::FILE_NOT_FOUND);
     }
 
-    byte headerBuffer[127];
-    fs.read(headerBuffer, 127);
+    byte headerBuffer[128];
+    fs.read(headerBuffer, 128);
 
     if (get<uint>(headerBuffer, 0) != DDS_MAGIC) {
         throw TextureException(Error::UNSUPPORTED_FILE_TYPE, "Supported only DirectDraw Surface (DDS) files");
     }
-    
-    uint lel = *(unsigned int*)&(headerBuffer[20]);
-
 
     DDS_HEADER header = get<DDS_HEADER>(headerBuffer, 4);
 
@@ -58,18 +55,17 @@ void Texture::ddsLoadUncompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
         throw TextureException(Error::UNSUPPORTED_FILE_TYPE, "Supported only A8R8G8B8 uncompressed textures");
     }
 
-    byte * buffer;
+    byte* buffer;
 
-    uint width = h.width,
-         height = h.height;
+    uint width = h.width, height = h.height;
     for (uint level = 0; level < h.mipMapCount; level++) {
         uint size = width * height * 4;
 
         buffer = new byte[size];
         fs->read(buffer, size);
 
-        glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buffer);
-        
+        glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
         width /= 2;
         height /= 2;
 
@@ -77,14 +73,11 @@ void Texture::ddsLoadUncompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
     }
 }
 
-void Texture::ddsLoadCompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs){
-    byte * buffer;
-    uint bufferSize = h.mipMapCount > 1 
-        ? h.pitchOrLinearSize * 2 
-        : h.pitchOrLinearSize;
+void Texture::ddsLoadCompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
+    byte* buffer;
+    uint bufferSize = h.mipMapCount > 1 ? h.pitchOrLinearSize * 2 : h.pitchOrLinearSize;
 
     buffer = new byte[bufferSize];
-    fs->read(buffer, 1); // Lol
     fs->read(buffer, bufferSize);
 
     GLenum compression;
@@ -101,14 +94,12 @@ void Texture::ddsLoadCompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs){
     }
 
     uint blockSize = (compression == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
-    uint offset = 0,
-         width = h.width, 
-         height = h.height;
+    uint offset = 0, width = h.width, height = h.height;
     for (uint level = 0; level < h.mipMapCount && (h.width || h.height); level++) {
-        uint size = ((width + 3) / 4)*((height + 3) / 4)*blockSize;
-        
+        uint size = ((width + 3) / 4) * ((height + 3) / 4) * blockSize;
+
         glCompressedTexImage2D(GL_TEXTURE_2D, level, compression, width, height, 0, size, buffer + offset);
-        
+
         offset += size;
         width /= 2;
         height /= 2;
