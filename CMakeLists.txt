@@ -30,6 +30,9 @@ set(SOURCE_CODE
 
     "source/Engine/Texture.cpp"
     "source/Engine/Texture.hpp"
+
+    "source/Engine/Camera.cpp"
+    "source/Engine/Camera.hpp"
 )
 source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 
