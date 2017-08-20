@@ -21,10 +21,12 @@ public:
     void SwapBuffers();
     bool ShouldClose();
 
+    GLFWwindow *m_GlfwWindow = nullptr;
+
 private:
     static bool s_LibrariesInitalized;
 
-    GLFWwindow *m_GlfwWindow = nullptr;
+    // GLFWwindow *m_GlfwWindow = nullptr;
 
     GameWindowSettings m_Settings;
 
