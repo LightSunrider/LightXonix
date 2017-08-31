@@ -1,40 +1,65 @@
 ﻿#include "Engine/InputSystem.hpp"
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <unordered_map>
 
-InputSystem::InputSystem(GLFWwindow* window){
+InputSystem::InputSystemMap InputSystem::s_InputSystemMap = InputSystem::InputSystemMap();
+
+InputSystem::InputSystem() {
+    m_GlfwWindow = nullptr;
+    m_Data = nullptr;
+}
+
+InputSystem::InputSystem(GLFWwindow* window) {
     m_GlfwWindow = window;
+    m_Data = new InputSystemData();
+    s_InputSystemMap.insert(std::pair<GLFWwindow*, InputSystemData*>(window, m_Data));
 
-    glfwSetCursorPosCallback(m_GlfwWindow, (*this).cursorPositionCallback);
-    glfwSetMouseButtonCallback(m_GlfwWindow, (*this).mouseButtonCallback);
-    glfwSetKeyCallback(m_GlfwWindow, (*this).keyCallback);
+    glfwSetCursorPosCallback(m_GlfwWindow, cursorPositionCallback);
+    glfwSetMouseButtonCallback(m_GlfwWindow, mouseButtonCallback);
+    glfwSetKeyCallback(m_GlfwWindow, keyCallback);
 
-    for (size_t i = 0; i < 1024; i++){
-        m_Keys[i] = false;
+    for (size_t i = 0; i < 1024; i++) {
+        m_Data->m_Keys[i] = false;
     }
     for (size_t i = 0; i < 8; i++) {
-        m_MouseButtons[i] = false;
+        m_Data->m_MouseButtons[i] = false;
     }
+    m_Data->m_CursorX = 0.0f;
+    m_Data->m_CursorY = 0.0f;
 }
 
-glm::vec2 InputSystem::GetCursorPosition(){
-    return glm::vec2(m_CursorX, m_CursorY);
+InputSystem::~InputSystem() {
+    if (m_Data == nullptr) {
+        return;
+    }
+
+    s_InputSystemMap.erase(s_InputSystemMap.find(m_GlfwWindow));
+
+    delete m_Data;
 }
 
-void InputSystem::SetCursorPosition(glm::vec2 cords){
-    glfwSetCursorPos(m_GlfwWindow, m_CursorX, m_CursorY);
+glm::vec2 InputSystem::GetCursorPosition() {
+    return glm::vec2(m_Data->m_CursorX, m_Data->m_CursorY);
 }
 
-bool InputSystem::IsButtonPressed(int button){
-    return false;
+void InputSystem::SetCursorPosition(glm::vec2 cords) {
+    glfwSetCursorPos(m_GlfwWindow, m_Data->m_CursorX, m_Data->m_CursorY);
 }
 
-bool InputSystem::IsKeyPressed(Key key){
-    return false;
+bool InputSystem::IsButtonPressed(int button) {
+    return m_Data->m_MouseButtons[button];
 }
 
-void InputSystem::cursorPositionCallback(GLFWwindow* window, double posx, double posy){
-    m_CursorX = posx;
-    m_CursorY = posy;
+bool InputSystem::IsKeyPressed(Key key) {
+    return m_Data->m_Keys[(int) key];
+}
+
+void InputSystem::cursorPositionCallback(GLFWwindow* window, double posx, double posy) {
+    InputSystemData* input = s_InputSystemMap[window];
+
+    input->m_CursorX = (float) posx;
+    input->m_CursorY = (float) posy;
 }
 
 void InputSystem::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -42,11 +67,13 @@ void InputSystem::mouseButtonCallback(GLFWwindow* window, int button, int action
         return;
     }
 
-    if (action == GLFW_PRESS) {
-        m_MouseButtons[button] = true;
+    InputSystemData* input = s_InputSystemMap[window];
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        input->m_MouseButtons[button] = true;
     }
-    else if (action == GLFW_RELEASE){
-        m_MouseButtons[button] = false;
+    else if (action == GLFW_RELEASE) {
+        input->m_MouseButtons[button] = false;
     }
 }
 
@@ -55,10 +82,12 @@ void InputSystem::keyCallback(GLFWwindow* window, int key, int scancode, int act
         return;
     }
 
-    if (action == GLFW_PRESS) {
-        m_Keys[key] = true;
+    InputSystemData* input = s_InputSystemMap[window];
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        input->m_Keys[key] = true;
     }
     else if (action == GLFW_RELEASE) {
-        m_Keys[key] = false;
+        input->m_Keys[key] = false;
     }
 }

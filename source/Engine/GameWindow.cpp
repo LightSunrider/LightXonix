@@ -2,6 +2,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+using namespace std;
+
 bool GameWindow::s_LibrariesInitalized = false;
 
 GameWindow::GameWindow() {
@@ -29,7 +31,7 @@ void GameWindow::PollEvents() {
 }
 
 void GameWindow::Close() {
-    glfwWindowShouldClose(m_GlfwWindow);
+    glfwSetWindowShouldClose(m_GlfwWindow, true);
 }
 
 void GameWindow::MakeContextCurrent() {
@@ -64,6 +66,9 @@ void GameWindow::createWindow(GameWindowSettings settings) {
 
         s_LibrariesInitalized = true;
     }
+
+    m_Input = InputSystem(m_GlfwWindow);
+    glfwSetInputMode(m_GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     updateSettings(settings);
 }

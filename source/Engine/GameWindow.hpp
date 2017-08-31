@@ -1,4 +1,6 @@
 #pragma once
+#include "Engine/InputSystem.hpp"
+#include <functional>
 
 struct GLFWwindow;
 
@@ -21,12 +23,13 @@ public:
     void SwapBuffers();
     bool ShouldClose();
 
-    GLFWwindow *m_GlfwWindow = nullptr;
+    InputSystem &Input = m_Input;
 
 private:
     static bool s_LibrariesInitalized;
 
-    // GLFWwindow *m_GlfwWindow = nullptr;
+    GLFWwindow *m_GlfwWindow = nullptr;
+    InputSystem m_Input;
 
     GameWindowSettings m_Settings;
 
