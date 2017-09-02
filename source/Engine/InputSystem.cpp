@@ -29,16 +29,6 @@ InputSystem::InputSystem(GLFWwindow* window) {
     m_Data->m_CursorY = 0.0f;
 }
 
-InputSystem::~InputSystem() {
-    if (m_Data == nullptr) {
-        return;
-    }
-
-    s_InputSystemMap.erase(s_InputSystemMap.find(m_GlfwWindow));
-
-    delete m_Data;
-}
-
 glm::vec2 InputSystem::GetCursorPosition() {
     return glm::vec2(m_Data->m_CursorX, m_Data->m_CursorY);
 }
@@ -60,6 +50,18 @@ void InputSystem::cursorPositionCallback(GLFWwindow* window, double posx, double
 
     input->m_CursorX = (float) posx;
     input->m_CursorY = (float) posy;
+}
+
+void InputSystem::Destroy() {
+    auto input = s_InputSystemMap.find(m_GlfwWindow);
+    if (input != s_InputSystemMap.end()) {
+        s_InputSystemMap.erase(s_InputSystemMap.find(m_GlfwWindow));
+    }
+
+    if (m_Data != nullptr) {
+        delete m_Data;
+        m_Data = nullptr;
+    }
 }
 
 void InputSystem::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {

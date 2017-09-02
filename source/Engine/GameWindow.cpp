@@ -32,6 +32,7 @@ void GameWindow::PollEvents() {
 
 void GameWindow::Close() {
     glfwSetWindowShouldClose(m_GlfwWindow, true);
+    m_Input.Destroy();
 }
 
 void GameWindow::MakeContextCurrent() {

@@ -11,8 +11,7 @@ class InputSystem {
 public:
     InputSystem();
     InputSystem(GLFWwindow* window);
-
-    ~InputSystem();
+    void Destroy();
 
     glm::vec2 GetCursorPosition();
     void SetCursorPosition(glm::vec2 cords);
@@ -34,7 +33,6 @@ private:
     static InputSystemMap s_InputSystemMap;
 
     GLFWwindow* m_GlfwWindow = nullptr;
-
     InputSystemData* m_Data;
 
     static void cursorPositionCallback(GLFWwindow* window, double posx, double posy);
