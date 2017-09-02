@@ -6,30 +6,57 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-// Function prototypes
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void Do_Movement();
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-bool keys[1024];
-GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
+GLfloat lastX = 400, lastY = 300;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 
+
 signed main() {
     GameWindow window = GameWindow(800, 600, "LightXonix");
-    glfwSetKeyCallback(window.m_GlfwWindow, key_callback);
-    glfwSetCursorPosCallback(window.m_GlfwWindow, mouse_callback);
-    glfwSetScrollCallback(window.m_GlfwWindow, scroll_callback);
-    glfwSetInputMode(window.m_GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
     Texture simpleTexture = Texture("Textures/simple.dds");
+
+    auto ProcessInput = [&]() {
+        if (window.Input.IsKeyPressed(Key::ESCAPE)) {
+            window.Close();
+            return;
+        }
+
+        if (window.Input.IsKeyPressed(Key::W)) {
+            camera.ProcessKeyboard(FORWARD, deltaTime);
+        }
+        if (window.Input.IsKeyPressed(Key::S)) {
+            camera.ProcessKeyboard(BACKWARD, deltaTime);
+        }
+        if (window.Input.IsKeyPressed(Key::A)) {
+            camera.ProcessKeyboard(LEFT, deltaTime);
+        }
+        if (window.Input.IsKeyPressed(Key::D)) {
+            camera.ProcessKeyboard(RIGHT, deltaTime);
+        }
+
+        glm::vec2 cursorPos = window.Input.GetCursorPosition();
+
+        if (firstMouse) {
+            lastX = cursorPos.x;
+            lastY = cursorPos.y;
+            firstMouse = false;
+        }
+
+        GLfloat xoffset = cursorPos.x - lastX;
+        GLfloat yoffset = lastY - cursorPos.y;// Reversed since y-coordinates go from bottom to left
+
+        lastX = cursorPos.x;
+        lastY = cursorPos.y;
+
+        camera.ProcessMouseMovement(xoffset, yoffset);
+    };
 
     // clang-format off
     GLfloat vertices[] = {
@@ -107,7 +134,7 @@ signed main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        Do_Movement();
+        ProcessInput();
 
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -152,52 +179,4 @@ signed main() {
     window.Close();
 
     return 0;
-}
-
-// Moves/alters the camera positions based on user input
-void Do_Movement() {
-    std::cout << "5051";
-    // Camera controls
-    if (keys[GLFW_KEY_W])
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (keys[GLFW_KEY_S])
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (keys[GLFW_KEY_A])
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (keys[GLFW_KEY_D])
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-}
-
-// Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-    // cout << key << endl;
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    if (key >= 0 && key < 1024) {
-        if (action == GLFW_PRESS)
-            keys[key] = true;
-        else if (action == GLFW_RELEASE)
-            keys[key] = false;
-    }
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos;// Reversed since y-coordinates go from bottom to left
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    camera.ProcessMouseScroll(yoffset);
 }
