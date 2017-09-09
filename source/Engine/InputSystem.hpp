@@ -1,9 +1,13 @@
 ﻿#pragma once
+
 #include "Engine/KeyMap.hpp"
+
 #include <glm/vec2.hpp>
 #include <unordered_map>
 
 struct GLFWwindow;
+
+namespace le {
 
 enum class MouseButton { Left = 0, Right = 1, Middle = 2, Four = 3, Five = 4, Six = 5, Seven = 6, Eight = 7 };
 
@@ -15,7 +19,7 @@ public:
 
     glm::vec2 GetCursorPosition();
     void SetCursorPosition(glm::vec2 cords);
-    bool IsButtonPressed(int button);
+    bool IsButtonPressed(MouseButton button);
 
     bool IsKeyPressed(Key key);
 
@@ -39,3 +43,4 @@ private:
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 };
+}

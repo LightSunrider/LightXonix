@@ -1,7 +1,10 @@
 ﻿#include "Engine/InputSystem.hpp"
+
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <unordered_map>
+
+namespace le {
 
 InputSystem::InputSystemMap InputSystem::s_InputSystemMap = InputSystem::InputSystemMap();
 
@@ -34,11 +37,14 @@ glm::vec2 InputSystem::GetCursorPosition() {
 }
 
 void InputSystem::SetCursorPosition(glm::vec2 cords) {
+    m_Data->m_CursorX = cords.x;
+    m_Data->m_CursorY = cords.y;
+
     glfwSetCursorPos(m_GlfwWindow, m_Data->m_CursorX, m_Data->m_CursorY);
 }
 
-bool InputSystem::IsButtonPressed(int button) {
-    return m_Data->m_MouseButtons[button];
+bool InputSystem::IsButtonPressed(MouseButton button) {
+    return m_Data->m_MouseButtons[(int) button];
 }
 
 bool InputSystem::IsKeyPressed(Key key) {
@@ -92,4 +98,5 @@ void InputSystem::keyCallback(GLFWwindow* window, int key, int scancode, int act
     else if (action == GLFW_RELEASE) {
         input->m_Keys[key] = false;
     }
+}
 }

@@ -1,4 +1,5 @@
 #include "Engine/Texture.hpp"
+
 #include <fstream>
 
 const uint DDS_MAGIC = 0x20534444;
@@ -15,6 +16,8 @@ const uint DDS_DXT5 = 0x35545844;
 template <typename T> inline T get(byte* binary, int position) {
     return *(T*) &(binary[position]);
 }
+
+namespace le {
 
 Texture::Texture(const char* path) {
     std::basic_ifstream<byte> fs;
@@ -106,4 +109,5 @@ void Texture::ddsLoadCompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
     }
 
     delete[] buffer;
+}
 }

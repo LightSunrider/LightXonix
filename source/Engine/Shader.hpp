@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+namespace le {
+
 class Shader {
 public:
     Shader(const GLchar *vertexPath, const GLchar *fragmentPath);
@@ -12,3 +14,4 @@ public:
 private:
     GLuint m_ProgramId;
 };
+}

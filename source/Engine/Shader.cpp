@@ -1,8 +1,11 @@
 #include "Engine/Shader.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+
+namespace le {
 
 Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
     glewExperimental = GL_TRUE;
@@ -75,4 +78,5 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
 
 void Shader::Use() {
     glUseProgram(this->m_ProgramId);
+}
 }

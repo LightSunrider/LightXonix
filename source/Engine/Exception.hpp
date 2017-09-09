@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace le {
+
 class Exception {
 public:
     Exception() {
@@ -13,3 +15,4 @@ public:
 
     const char *Message;
 };
+}

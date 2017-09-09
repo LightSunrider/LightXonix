@@ -1,19 +1,22 @@
-#include "Engine/GameWindow.hpp"
+#include "Engine/Window.hpp"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 using namespace std;
 
-bool GameWindow::s_LibrariesInitalized = false;
+namespace le {
 
-GameWindow::GameWindow() {
-    GameWindowSettings settings;
+bool Window::s_LibrariesInitalized = false;
+
+Window::Window() {
+    WindowSettings settings;
 
     createWindow(settings);
 }
 
-GameWindow::GameWindow(int Width, int Height, char *Title) {
-    GameWindowSettings settings;
+Window::Window(int Width, int Height, char *Title) {
+    WindowSettings settings;
 
     settings.Width = Width;
     settings.Height = Height;
@@ -22,32 +25,32 @@ GameWindow::GameWindow(int Width, int Height, char *Title) {
     createWindow(settings);
 }
 
-GameWindow::GameWindow(GameWindowSettings settings) {
+Window::Window(WindowSettings settings) {
     createWindow(settings);
 }
 
-void GameWindow::PollEvents() {
+void Window::PollEvents() {
     glfwPollEvents();
 }
 
-void GameWindow::Close() {
+void Window::Close() {
     glfwSetWindowShouldClose(m_GlfwWindow, true);
     m_Input.Destroy();
 }
 
-void GameWindow::MakeContextCurrent() {
+void Window::MakeContextCurrent() {
     glfwMakeContextCurrent(m_GlfwWindow);
 }
 
-void GameWindow::SwapBuffers() {
+void Window::SwapBuffers() {
     glfwSwapBuffers(m_GlfwWindow);
 }
 
-bool GameWindow::ShouldClose() {
+bool Window::ShouldClose() {
     return (bool) glfwWindowShouldClose(m_GlfwWindow);
 }
 
-void GameWindow::createWindow(GameWindowSettings settings) {
+void Window::createWindow(WindowSettings settings) {
     // GLFW initialization
     if (s_LibrariesInitalized == false) {
         glfwInit();
@@ -74,7 +77,7 @@ void GameWindow::createWindow(GameWindowSettings settings) {
     updateSettings(settings);
 }
 
-void GameWindow::updateSettings(GameWindowSettings settings) {
+void Window::updateSettings(WindowSettings settings) {
     if (m_Settings.Width != settings.Width || m_Settings.Height != settings.Height) {
         glfwSetWindowSize(m_GlfwWindow, settings.Width, settings.Height);
     }
@@ -84,4 +87,5 @@ void GameWindow::updateSettings(GameWindowSettings settings) {
     }
 
     m_Settings = settings;
+}
 }

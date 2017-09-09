@@ -1,21 +1,23 @@
 #pragma once
+
 #include "Engine/InputSystem.hpp"
-#include <functional>
 
 struct GLFWwindow;
 
-struct GameWindowSettings {
+namespace le {
+
+struct WindowSettings {
     int Width = 800, Height = 600;
     char *Title = (char *) "";
 
-    GameWindowSettings() {}
+    WindowSettings() {}
 };
 
-class GameWindow {
+class Window {
 public:
-    GameWindow();
-    GameWindow(int m_Width, int m_Height, char *m_Title);
-    GameWindow(GameWindowSettings settings);
+    Window();
+    Window(int m_Width, int m_Height, char *m_Title);
+    Window(WindowSettings settings);
 
     void PollEvents();
     void Close();
@@ -31,8 +33,9 @@ private:
     GLFWwindow *m_GlfwWindow = nullptr;
     InputSystem m_Input;
 
-    GameWindowSettings m_Settings;
+    WindowSettings m_Settings;
 
-    void createWindow(GameWindowSettings settings);
-    void updateSettings(GameWindowSettings settings);
+    void createWindow(WindowSettings settings);
+    void updateSettings(WindowSettings settings);
 };
+}

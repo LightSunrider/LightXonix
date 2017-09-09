@@ -2,7 +2,10 @@
 
 #include "Engine/Exception.hpp"
 #include "Engine/Types.hpp"
+
 #include <GL/glew.h>
+
+namespace le {
 
 class Texture {
 public:
@@ -61,3 +64,4 @@ private:
     void ddsLoadUncompressed(DDS_HEADER header, std::basic_ifstream<byte>* fs);
     void ddsLoadCompressed(DDS_HEADER header, std::basic_ifstream<byte>* fs);
 };
+}

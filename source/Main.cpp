@@ -1,11 +1,11 @@
 #include "Engine/Engine.hpp"
+
 #include <GLFW/glfw3.h>
-#include <ctime>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 
+using namespace le;
 
 // Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -17,7 +17,7 @@ GLfloat lastFrame = 0.0f;
 
 
 signed main() {
-    GameWindow window = GameWindow(800, 600, "LightXonix");
+    Window window = Window(800, 600, "LightXonix");
 
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
     Texture simpleTexture = Texture("Textures/simple.dds");

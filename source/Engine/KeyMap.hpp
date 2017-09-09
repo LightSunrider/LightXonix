@@ -1,5 +1,6 @@
-﻿//clang-format off
-#pragma once
+﻿#pragma once
+
+namespace le {
 
 enum class Key {
             UNKNOWN       = -1,
@@ -124,3 +125,4 @@ enum class Key {
             RIGHT_SUPER   = 347,
             MENU          = 348
 };
+}

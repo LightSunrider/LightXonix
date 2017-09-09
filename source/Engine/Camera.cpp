@@ -2,6 +2,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace le {
+
 Camera::Camera(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch)
     : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM) {
     this->Position = position;
@@ -77,4 +79,5 @@ void Camera::updateCameraVectors() {
                                                                          // gets closer to 0 the more you look up or
                                                                          // down which results in slower movement.
     this->Up = glm::normalize(glm::cross(this->Right, this->Front));
+}
 }
