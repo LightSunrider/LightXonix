@@ -6,16 +6,17 @@
 #include <unordered_map>
 
 struct GLFWwindow;
+namespace le { class Window; }
 
 namespace le {
 
 enum class MouseButton { Left = 0, Right = 1, Middle = 2, Four = 3, Five = 4, Six = 5, Seven = 6, Eight = 7 };
 
-class InputSystem {
+class InputSystem { 
+    friend le::Window;
 public:
     InputSystem();
     InputSystem(GLFWwindow* window);
-    void Destroy();
 
     glm::vec2 GetCursorPosition();
     void SetCursorPosition(glm::vec2 cords);
@@ -38,6 +39,8 @@ private:
 
     GLFWwindow* m_GlfwWindow = nullptr;
     InputSystemData* m_Data;
+
+    void Destroy();
 
     static void cursorPositionCallback(GLFWwindow* window, double posx, double posy);
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
