@@ -38,6 +38,8 @@ set(SOURCE_CODE
     "source/Engine/InputSystem.cpp"
     "source/Engine/InputSystem.hpp"
     "source/Engine/KeyMap.hpp"
+
+    "source/Engine/GameObject.hpp"
 )
 source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 # ------------
