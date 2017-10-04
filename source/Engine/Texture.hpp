@@ -61,7 +61,7 @@ private:
         uint _dwReserved2;
     };
 
-    void ddsLoadUncompressed(DDS_HEADER header, std::basic_ifstream<byte>* fs);
-    void ddsLoadCompressed(DDS_HEADER header, std::basic_ifstream<byte>* fs);
+    void ddsLoadUncompressed(DDS_HEADER header, std::ifstream* fs);
+    void ddsLoadCompressed(DDS_HEADER header, std::ifstream* fs);
 };
 }

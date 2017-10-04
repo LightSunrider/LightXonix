@@ -20,16 +20,16 @@ template <typename T> inline T get(byte* binary, int position) {
 namespace le {
 
 Texture::Texture(const char* path) {
-    std::basic_ifstream<byte> fs;
+    std::ifstream fs;
     fs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fs = std::basic_ifstream<byte>(path, std::ios::binary);
+    fs = std::ifstream(path, std::ios::binary);
 
     if (fs.fail()) {
         throw TextureException(Error::FILE_NOT_FOUND);
     }
 
     byte headerBuffer[128];
-    fs.read(headerBuffer, 128);
+    fs.read(reinterpret_cast<char*>(&headerBuffer), 128);
 
     if (get<uint>(headerBuffer, 0) != DDS_MAGIC) {
         throw TextureException(Error::UNSUPPORTED_FILE_TYPE, "Supported only DirectDraw Surface (DDS) files");
@@ -53,7 +53,7 @@ Texture::Texture(const char* path) {
     fs.close();
 }
 
-void Texture::ddsLoadUncompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
+void Texture::ddsLoadUncompressed(DDS_HEADER h, std::ifstream* fs) {
     if (!(h.pf.RGBBitCount == 32 && h.pf.ABitMask == 0xFF000000)) {
         throw TextureException(Error::UNSUPPORTED_FILE_TYPE, "Supported only A8R8G8B8 uncompressed textures");
     }
@@ -65,7 +65,7 @@ void Texture::ddsLoadUncompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
         uint size = width * height * 4;
 
         buffer = new byte[size];
-        fs->read(buffer, size);
+        fs->read(reinterpret_cast<char*>(buffer), size);
 
         glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
@@ -76,12 +76,12 @@ void Texture::ddsLoadUncompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
     }
 }
 
-void Texture::ddsLoadCompressed(DDS_HEADER h, std::basic_ifstream<byte>* fs) {
+void Texture::ddsLoadCompressed(DDS_HEADER h, std::ifstream* fs) {
     byte* buffer;
     uint bufferSize = h.mipMapCount > 1 ? h.pitchOrLinearSize * 2 : h.pitchOrLinearSize;
 
     buffer = new byte[bufferSize];
-    fs->read(buffer, bufferSize);
+    fs->read(reinterpret_cast<char*>(buffer), bufferSize);
 
     GLenum compression;
     switch (h.pf.fourCC) {
