@@ -1,6 +1,6 @@
 #include "Engine/Window.hpp"
 
-#include <GL/glew.h>
+#include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
 using namespace std;
@@ -65,8 +65,7 @@ void Window::createWindow(WindowSettings settings) {
 
     // GLEW initialization
     if (s_LibrariesInitalized == false) {
-        glewExperimental = GL_TRUE;
-        glewInit();
+        gl3wInit();
 
         s_LibrariesInitalized = true;
     }

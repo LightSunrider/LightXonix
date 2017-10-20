@@ -89,9 +89,9 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARIES})
 
-# GLEW
-find_package(GLEW REQUIRED)
-target_link_libraries(${EXECUTABLE_NAME} GLEW::glew_s)
+# gl3w
+find_package(gl3w REQUIRED)
+target_link_libraries(${EXECUTABLE_NAME} gl3w)
 
 # glm
 find_package(glm REQUIRED)

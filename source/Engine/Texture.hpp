@@ -3,7 +3,7 @@
 #include "Engine/Exception.hpp"
 #include "Engine/Types.hpp"
 
-#include <GL/glew.h>
+#include <GL/gl3w.h>
 
 namespace le {
 

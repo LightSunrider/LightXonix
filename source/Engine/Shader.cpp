@@ -8,8 +8,7 @@
 namespace le {
 
 Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
+    GLenum err = gl3wInit();
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
