@@ -5,19 +5,18 @@
 struct GLFWwindow;
 
 namespace le {
-
 struct WindowSettings {
     int Width = 800, Height = 600;
-    char *Title = (char *) "";
+    std::string Title = "";
 
-    WindowSettings() {}
+    WindowSettings() = default;
 };
 
 class Window {
 public:
     Window();
-    Window(int m_Width, int m_Height, char *m_Title);
-    Window(WindowSettings settings);
+    Window(int m_Width, int m_Height, const char *m_Title);
+    Window(WindowSettings &settings);
 
     void PollEvents();
     void Close();
@@ -28,7 +27,7 @@ public:
     InputSystem &Input = m_Input;
 
 private:
-    static bool s_LibrariesInitalized;
+    static bool s_LibrariesInitialized;
 
     GLFWwindow *m_GlfwWindow = nullptr;
     InputSystem m_Input;
@@ -38,4 +37,3 @@ private:
     void createWindow(WindowSettings settings);
     void updateSettings(WindowSettings settings);
 };
-}

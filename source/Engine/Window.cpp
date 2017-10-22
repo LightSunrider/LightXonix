@@ -7,7 +7,7 @@ using namespace std;
 
 namespace le {
 
-bool Window::s_LibrariesInitalized = false;
+bool Window::s_LibrariesInitialized = false;
 
 Window::Window() {
     WindowSettings settings;
@@ -15,7 +15,7 @@ Window::Window() {
     createWindow(settings);
 }
 
-Window::Window(int Width, int Height, char *Title) {
+Window::Window(int Width, int Height, const char *Title) {
     WindowSettings settings;
 
     settings.Width = Width;
@@ -25,7 +25,7 @@ Window::Window(int Width, int Height, char *Title) {
     createWindow(settings);
 }
 
-Window::Window(WindowSettings settings) {
+Window::Window(WindowSettings &settings) {
     createWindow(settings);
 }
 
@@ -52,7 +52,7 @@ bool Window::ShouldClose() {
 
 void Window::createWindow(WindowSettings settings) {
     // GLFW initialization
-    if (s_LibrariesInitalized == false) {
+    if (!s_LibrariesInitialized) {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -60,14 +60,14 @@ void Window::createWindow(WindowSettings settings) {
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     }
 
-    m_GlfwWindow = glfwCreateWindow(settings.Width, settings.Height, settings.Title, NULL, NULL);
+    m_GlfwWindow = glfwCreateWindow(settings.Width, settings.Height, settings.Title.c_str(), NULL, NULL);
     MakeContextCurrent();
 
-    // GLEW initialization
-    if (s_LibrariesInitalized == false) {
+    // gl3w initialization
+    if (!s_LibrariesInitialized) {
         gl3wInit();
 
-        s_LibrariesInitalized = true;
+        s_LibrariesInitialized = true;
     }
 
     m_Input = InputSystem(m_GlfwWindow);
@@ -82,7 +82,7 @@ void Window::updateSettings(WindowSettings settings) {
     }
 
     if (m_Settings.Title != settings.Title) {
-        glfwSetWindowTitle(m_GlfwWindow, settings.Title);
+        glfwSetWindowTitle(m_GlfwWindow, settings.Title.c_str());
     }
 
     m_Settings = settings;
