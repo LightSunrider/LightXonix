@@ -37,3 +37,4 @@ private:
     void createWindow(WindowSettings settings);
     void updateSettings(WindowSettings settings);
 };
+}
