@@ -14,11 +14,15 @@ public:
 
     glm::vec3 Position;
     glm::vec3 Rotation;
-    glm::vec3 Scale; 
+    glm::vec3 Scale;
+
+    void Update() {
+        OnUpdate();
+    }
 
 private:
-    void OnCreate() { };
-    void OnUpdate() { };
-    void OnDestroy() { };
+    void OnCreate(){};
+    void OnUpdate(){};
+    void OnDestroy(){};
 };
 }
