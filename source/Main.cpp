@@ -1,27 +1,21 @@
 #include "Engine/Engine.hpp"
 
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace le;
-
-// Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-bool firstMouse = true;
-GLfloat lastX = 400, lastY = 300;
-
-GLfloat deltaTime = 0.0f;
-GLfloat lastFrame = 0.0f;
-
 
 signed main() {
     Window window = Window(800, 600, "LightXonix");
 
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
     Texture simpleTexture = Texture("Textures/simple.dds");
+    Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
+    float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
+
+    glm::vec2 deltaPos = window.Input.GetCursorPosition();
     auto ProcessInput = [&]() {
         if (window.Input.IsKeyPressed(Key::ESCAPE)) {
             window.Close();
@@ -29,33 +23,22 @@ signed main() {
         }
 
         if (window.Input.IsKeyPressed(Key::W)) {
-            camera.ProcessKeyboard(FORWARD, deltaTime);
+            camera.Position -= camera.getForward() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::S)) {
-            camera.ProcessKeyboard(BACKWARD, deltaTime);
+            camera.Position += camera.getForward() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::A)) {
-            camera.ProcessKeyboard(LEFT, deltaTime);
+            camera.Position -= camera.getRight() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::D)) {
-            camera.ProcessKeyboard(RIGHT, deltaTime);
+            camera.Position += camera.getRight() * deltaTime * 10.0f;
         }
 
-        glm::vec2 cursorPos = window.Input.GetCursorPosition();
-
-        if (firstMouse) {
-            lastX = cursorPos.x;
-            lastY = cursorPos.y;
-            firstMouse = false;
-        }
-
-        GLfloat xoffset = cursorPos.x - lastX;
-        GLfloat yoffset = lastY - cursorPos.y;// Reversed since y-coordinates go from bottom to left
-
-        lastX = cursorPos.x;
-        lastY = cursorPos.y;
-
-        camera.ProcessMouseMovement(xoffset, yoffset);
+        glm::vec2 cursorPos = window.Input.GetCursorPosition() - deltaPos;
+        deltaPos = window.Input.GetCursorPosition();
+        camera.Rotation.x += cursorPos.y * deltaTime * 10.0f;
+        camera.Rotation.y += cursorPos.x * deltaTime * 10.0f;
     };
 
     // clang-format off
@@ -103,77 +86,75 @@ signed main() {
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
     // clang-format on
 
     glEnable(GL_DEPTH_TEST);
 
-    GLuint VBO, VAO, EBO;
+    uint VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*) 0);
+    // position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
     glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*) (3 * sizeof(GLfloat)));
+    // texture uv
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glBindVertexArray(0);
+    glUniform1i(glGetUniformLocation(simpleShader.Id, "Texture"), simpleTexture.Id);
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {
-        GLfloat currentFrame = glfwGetTime();
+        float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        window.PollEvents();
         ProcessInput();
 
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         simpleShader.Use();
+        camera.Update();
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, simpleTexture.Id);
-        glUniform1i(glGetUniformLocation(simpleShader.Id, "Texture"), 0);
 
-        // Create camera transformation
-        glm::mat4 view;
-        view = camera.GetViewMatrix();
-        glm::mat4 projection;
-        projection = glm::perspective(camera.Zoom, (float) 800 / (float) 600, 0.1f, 1000.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "projection"), 1, GL_FALSE, &projection[0][0]);
 
-        GLint modelLoc = glGetUniformLocation(simpleShader.Id, "model");
-        GLint viewLoc = glGetUniformLocation(simpleShader.Id, "view");
-        GLint projLoc = glGetUniformLocation(simpleShader.Id, "projection");
+        glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "view"), 1, GL_FALSE, &camera.ViewMatrix[0][0]);
 
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        for (uint i = 0; i < 10; i++) {
+            glm::mat4 model;
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "model"), 1, GL_FALSE, &model[0][0]);
 
-        glBindVertexArray(VAO);
-
-        glm::mat4 model;
-        model = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (GLfloat) glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glBindVertexArray(0);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         window.SwapBuffers();
-        window.PollEvents();
-
         lastFrame = currentFrame;
     }
     window.Close();
