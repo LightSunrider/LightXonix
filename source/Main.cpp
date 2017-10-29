@@ -118,7 +118,7 @@ signed main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glUniform1i(glGetUniformLocation(simpleShader.Id, "Texture"), simpleTexture.Id);
+    simpleShader.setInt("Texture", simpleTexture.Id);
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {
@@ -139,9 +139,9 @@ signed main() {
         glBindTexture(GL_TEXTURE_2D, simpleTexture.Id);
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "projection"), 1, GL_FALSE, &projection[0][0]);
+        simpleShader.setMat4("projection", projection);
 
-        glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "view"), 1, GL_FALSE, &camera.ViewMatrix[0][0]);
+        simpleShader.setMat4("view", camera.ViewMatrix);
 
         for (uint i = 0; i < 10; i++) {
             glm::mat4 model;
@@ -149,7 +149,7 @@ signed main() {
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-            glUniformMatrix4fv(glGetUniformLocation(simpleShader.Id, "model"), 1, GL_FALSE, &model[0][0]);
+            simpleShader.setMat4("model", model);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
