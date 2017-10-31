@@ -19,11 +19,11 @@ Camera::Camera(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) : GameOb
 void Camera::OnUpdate() {
     NormalizeRotation(Rotation);
 
-    if (Rotation.x > 40.0f) {
-        Rotation.x = 40.0f;
+    if (Rotation.x > 89.0f) {
+        Rotation.x = 89.0f;
     }
-    if (Rotation.x < -40.0f) {
-        Rotation.x = -40.0f;
+    if (Rotation.x < -89.0f) {
+        Rotation.x = -89.0f;
     }
 
     glm::quat pitch = glm::angleAxis(glm::radians(Rotation.x), glm::vec3(1, 0, 0));

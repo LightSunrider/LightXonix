@@ -2,7 +2,6 @@
 
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <unordered_map>
 
 namespace le {
 
@@ -28,8 +27,11 @@ InputSystem::InputSystem(GLFWwindow* window) {
     for (size_t i = 0; i < 8; i++) {
         m_Data->m_MouseButtons[i] = false;
     }
-    m_Data->m_CursorX = 0.0f;
-    m_Data->m_CursorY = 0.0f;
+
+    double cursorX, cursorY;
+    glfwGetCursorPos(window, &cursorX, &cursorY);
+    m_Data->m_CursorX = (float) cursorX;
+    m_Data->m_CursorY = (float) cursorY;
 }
 
 glm::vec2 InputSystem::GetCursorPosition() {

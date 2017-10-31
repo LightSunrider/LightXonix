@@ -10,12 +10,12 @@ signed main() {
 
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
     Texture simpleTexture = Texture("Textures/simple.dds");
-    Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+    Camera camera = Camera();
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
 
-    glm::vec2 deltaPos = window.Input.GetCursorPosition();
+    glm::vec2 lastPos;
     auto ProcessInput = [&]() {
         if (window.Input.IsKeyPressed(Key::ESCAPE)) {
             window.Close();
@@ -35,8 +35,8 @@ signed main() {
             camera.Position += camera.getRight() * deltaTime * 10.0f;
         }
 
-        glm::vec2 cursorPos = window.Input.GetCursorPosition() - deltaPos;
-        deltaPos = window.Input.GetCursorPosition();
+        glm::vec2 cursorPos = window.Input.GetCursorPosition() - lastPos;
+        lastPos = window.Input.GetCursorPosition();
         camera.Rotation.x += cursorPos.y * deltaTime * 10.0f;
         camera.Rotation.y += cursorPos.x * deltaTime * 10.0f;
     };
