@@ -87,7 +87,7 @@ signed main() {
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 0.0f,  0.0f,  -2.0f),
         glm::vec3( 2.0f,  5.0f, -15.0f),
         glm::vec3(-1.5f, -2.2f, -2.5f),
         glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -122,7 +122,7 @@ signed main() {
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {
-        float currentFrame = glfwGetTime();
+        float currentFrame = (float) glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -138,9 +138,8 @@ signed main() {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, simpleTexture.Id);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
         simpleShader.setMat4("projection", projection);
-
         simpleShader.setMat4("view", camera.ViewMatrix);
 
         for (uint i = 0; i < 10; i++) {
@@ -148,6 +147,16 @@ signed main() {
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            simpleShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        /* skybox */ {
+            glm::mat4 model;
+            model = glm::translate(model, camera.Position * -1.f);
+            model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
             simpleShader.setMat4("model", model);
 
