@@ -31,7 +31,7 @@ void Camera::OnUpdate() {
     glm::quat roll = glm::angleAxis(glm::radians(Rotation.z), glm::vec3(0, 0, 1));
 
     m_Orientation = glm::normalize(pitch * yaw * roll);
-    m_ViewMatrix = glm::mat4_cast(m_Orientation) * glm::translate(glm::mat4(), Position);
+    m_ViewMatrix = glm::mat4_cast(m_Orientation) * glm::translate(glm::mat4(), -Position);
 }
 
 glm::vec3 Camera::getRight() const {

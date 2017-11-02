@@ -24,16 +24,16 @@ signed main() {
         }
 
         if (window.Input.IsKeyPressed(Key::W)) {
-            camera.Position -= camera.getForward() * deltaTime * 10.0f;
-        }
-        if (window.Input.IsKeyPressed(Key::S)) {
             camera.Position += camera.getForward() * deltaTime * 10.0f;
         }
+        if (window.Input.IsKeyPressed(Key::S)) {
+            camera.Position -= camera.getForward() * deltaTime * 10.0f;
+        }
         if (window.Input.IsKeyPressed(Key::A)) {
-            camera.Position -= camera.getRight() * deltaTime * 10.0f;
+            camera.Position += camera.getRight() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::D)) {
-            camera.Position += camera.getRight() * deltaTime * 10.0f;
+            camera.Position -= camera.getRight() * deltaTime * 10.0f;
         }
 
         glm::vec2 cursorPos = window.Input.GetCursorPosition() - lastPos;
@@ -119,7 +119,7 @@ signed main() {
 
         /* skybox */ {
             glm::mat4 model;
-            model = glm::translate(model, camera.Position * -1.f);
+            model = glm::translate(model, camera.Position);
             model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
             simpleShader.setMat4("model", model);
