@@ -17,7 +17,7 @@ public:
     std::vector<glm::vec3> Vertices;
     std::vector<glm::vec2> Uv;
     std::vector<glm::vec3> Normals;
-    std::vector<ushort> Fragments;
+    std::vector<ushort> Elements;
 
     class ModelException : public Exception {
     public:
@@ -28,5 +28,22 @@ public:
     };
 
 private:
+    struct ObjRawData {
+        std::vector<glm::vec3> v;
+        std::vector<glm::vec2> vt;
+        std::vector<glm::vec3> vn;
+        std::vector<ushort> fv, ft, fn;
+    };
+
+    struct ObjData {
+        std::vector<glm::vec3> Vertices;
+        std::vector<glm::vec2> Uv;
+        std::vector<glm::vec3> Normals;
+        std::vector<ushort> Elements;
+    };
+
+    ObjRawData loadObj(const char* path);
+    ObjData indexVertices(ObjRawData& obj);
+    ObjData indexFragments(ObjData& obj);
 };
 }

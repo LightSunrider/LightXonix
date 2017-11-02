@@ -74,6 +74,12 @@ signed main() {
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(glm::vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
 
+    uint elementBuffer;
+    glGenBuffers(1, &elementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER, cubeModel.Elements.size() * sizeof(ushort), &cubeModel.Elements[0], GL_STATIC_DRAW);
+
     simpleShader.setInt("Texture", simpleTexture.Id);
 
     window.MakeContextCurrent();
@@ -102,6 +108,8 @@ signed main() {
         glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
         simpleShader.setMat4("projection", projection);
         simpleShader.setMat4("view", camera.ViewMatrix);
@@ -114,7 +122,7 @@ signed main() {
 
             simpleShader.setMat4("model", model);
 
-            glDrawArrays(GL_TRIANGLES, 0, cubeModel.Vertices.size());
+            glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
 
         /* skybox */ {
@@ -124,7 +132,7 @@ signed main() {
 
             simpleShader.setMat4("model", model);
 
-            glDrawArrays(GL_TRIANGLES, 0, cubeModel.Vertices.size());
+            glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
 
         window.SwapBuffers();
