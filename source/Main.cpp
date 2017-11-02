@@ -111,7 +111,6 @@ signed main() {
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 
             simpleShader.setMat4("model", model);
 
@@ -121,7 +120,7 @@ signed main() {
         /* skybox */ {
             glm::mat4 model;
             model = glm::translate(model, camera.Position * -1.f);
-            model = glm::scale(model, glm::vec3(250.0f, 250.0f, 250.0f));
+            model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
             simpleShader.setMat4("model", model);
 
