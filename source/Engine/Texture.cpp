@@ -19,6 +19,26 @@ template <typename T> inline T get(byte* binary, int position) {
 
 namespace le {
 
+bool Texture::defaultInitialized = false;
+uint Texture::defaultId = 0;
+
+Texture::Texture() {
+    if (!defaultInitialized) {
+        glGenTextures(1, &defaultId);
+        glBindTexture(GL_TEXTURE_2D, defaultId);
+        byte defaultTexture[4]{255, 255, 255, 255};
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, defaultTexture);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    m_Id = defaultId;
+}
+
+Texture::Texture(Texture& texture) {
+    m_Id = texture.Id;
+    m_Width = texture.Width;
+    m_Height = texture.m_Height;
+}
+
 Texture::Texture(const char* path) {
     std::ifstream fs;
     fs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -52,6 +72,16 @@ Texture::Texture(const char* path) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
     fs.close();
+}
+
+Texture& Texture::operator=(const Texture& other) {
+    if (this != &other) {
+        m_Id = other.Id;
+        m_Width = other.Width;
+        m_Height = other.m_Height;
+    }
+
+    return *this;
 }
 
 void Texture::ddsLoadUncompressed(DDS_HEADER h, std::ifstream* fs) {

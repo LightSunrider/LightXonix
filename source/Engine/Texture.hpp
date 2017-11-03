@@ -9,6 +9,8 @@ namespace le {
 
 class Texture {
 public:
+    Texture();
+    Texture(Texture& texture);
     Texture(const char* path);
 
     GLuint& Id = m_Id;
@@ -16,6 +18,7 @@ public:
     uint& Width = m_Width;
     uint& Height = m_Height;
 
+    Texture& operator=(const Texture& other);
 
     enum class Error { UNKNOWN, FILE_NOT_FOUND, BAD_FILE, UNSUPPORTED_FILE_TYPE };
 
@@ -28,7 +31,10 @@ public:
     };
 
 private:
-    GLuint m_Id;
+    static bool defaultInitialized;
+    static uint defaultId;
+
+    uint m_Id;
 
     uint m_Width;
     uint m_Height;

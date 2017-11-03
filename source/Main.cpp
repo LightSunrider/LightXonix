@@ -9,7 +9,7 @@ signed main() {
     Window window = Window(800, 600, "LightXonix");
 
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
-    Texture simpleTexture = Texture("Textures/simple.dds");
+    Texture simpleTexture("Textures/simple.dds");
     Camera camera = Camera();
     Model cubeModel = Model("Models/cube.obj");
 
