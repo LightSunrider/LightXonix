@@ -80,7 +80,7 @@ signed main() {
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER, cubeModel.Elements.size() * sizeof(ushort), &cubeModel.Elements[0], GL_STATIC_DRAW);
 
-    simpleShader.setInt("Texture", simpleTexture.Id);
+    simpleShader.setTexture(0, "Texture", simpleTexture);
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {

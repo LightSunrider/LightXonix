@@ -50,6 +50,7 @@ Texture::Texture(const char* path) {
         throw TextureException(Error::BAD_FILE);
     }
 
+    glBindTexture(GL_TEXTURE_2D, 0);
     fs.close();
 }
 
