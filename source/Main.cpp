@@ -11,7 +11,7 @@ signed main() {
     Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
     Texture simpleTexture("Textures/simple.dds");
     Camera camera = Camera();
-    Model cubeModel = Model("Models/cube.obj");
+    Model cubeModel("Models/cube.obj");
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;

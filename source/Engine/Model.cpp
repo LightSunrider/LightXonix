@@ -7,6 +7,15 @@
 
 namespace le {
 
+Model::Model() = default;
+
+Model::Model(Model &model) {
+    Vertices = model.Vertices;
+    Uv = model.Uv;
+    Normals = model.Normals;
+    Elements = model.Elements;
+}
+
 Model::Model(const char *path) {
     ObjRawData rawObj = loadObj(path);
     ObjData obj = indexVertices(rawObj);
@@ -16,6 +25,17 @@ Model::Model(const char *path) {
     Uv = obj.Uv;
     Normals = obj.Normals;
     Elements = obj.Elements;
+}
+
+Model &Model::operator=(const Model &other) {
+    if (this != &other) {
+        Vertices = other.Vertices;
+        Uv = other.Uv;
+        Normals = other.Normals;
+        Elements = other.Elements;
+    }
+
+    return *this;
 }
 
 Model::ObjRawData Model::loadObj(const char *path) {

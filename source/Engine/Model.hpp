@@ -10,14 +10,18 @@ namespace le {
 
 class Model {
 public:
+    Model();
+    Model(Model& model);
     Model(const char* path);
 
-    enum class Error { UNKNOWN, FILE_NOT_FOUND };
+    Model& operator=(const Model& other);
 
     std::vector<glm::vec3> Vertices;
     std::vector<glm::vec2> Uv;
     std::vector<glm::vec3> Normals;
     std::vector<ushort> Elements;
+
+    enum class Error { UNKNOWN, FILE_NOT_FOUND };
 
     class ModelException : public Exception {
     public:
