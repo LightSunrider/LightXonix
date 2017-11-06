@@ -50,8 +50,8 @@ source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_
 # Resource files
 #  Shaders
 set(PROJECT_RESOURCES_SHADERS
-    "resources/Shaders/simple.vert"
-    "resources/Shaders/simple.frag"
+    "resources/Shaders/PhongShader.vs"
+    "resources/Shaders/PhongShader.fs"
 )
 #  Textures
 set(PROJECT_RESOURCES_TEXTURES

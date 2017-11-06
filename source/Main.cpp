@@ -8,7 +8,7 @@ using namespace le;
 signed main() {
     Window window = Window(800, 600, "LightXonix");
 
-    Shader simpleShader = Shader("Shaders/simple.vert", "Shaders/simple.frag");
+    Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs");
     Texture simpleTexture("Textures/simple.dds");
     Camera camera = Camera();
     Model cubeModel("Models/cube.obj");
@@ -74,13 +74,16 @@ signed main() {
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(glm::vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
 
+    uint normalBuffer;
+    glGenBuffers(1, &normalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, cubeModel.Normals.size() * sizeof(glm::vec3), &cubeModel.Normals[0], GL_STATIC_DRAW);
+
     uint elementBuffer;
     glGenBuffers(1, &elementBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER, cubeModel.Elements.size() * sizeof(ushort), &cubeModel.Elements[0], GL_STATIC_DRAW);
-
-    simpleShader.setTexture(0, "Texture", simpleTexture);
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {
@@ -94,11 +97,8 @@ signed main() {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        simpleShader.Use();
+        phongShader.Use();
         camera.Update();
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, simpleTexture.Id);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -108,11 +108,24 @@ signed main() {
         glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
-        simpleShader.setMat4("projection", projection);
-        simpleShader.setMat4("view", camera.ViewMatrix);
+        phongShader.setMat4("Projection", projection);
+        phongShader.setMat4("View", camera.ViewMatrix);
+
+        phongShader.setVec3("Light.Position", glm::vec3(0.0f, 0.0f, 0.0f));
+        phongShader.setVec3("Light.Color", glm::vec3(1.0f, 1.0f, 1.0f));
+        phongShader.setFloat("Light.Power", 2.5f);
+
+        phongShader.setVec3("Material.Ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+        phongShader.setVec3("Material.Diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+        phongShader.setVec3("Material.Specular", glm::vec3(0.3f, 0.3f, 0.3f));
+        phongShader.setTexture(0, "Texture", simpleTexture);
 
         for (uint i = 0; i < 10; i++) {
             glm::mat4 model;
@@ -120,7 +133,7 @@ signed main() {
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-            simpleShader.setMat4("model", model);
+            phongShader.setMat4("Model", model);
 
             glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
@@ -130,7 +143,7 @@ signed main() {
             model = glm::translate(model, camera.Position);
             model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
-            simpleShader.setMat4("model", model);
+            phongShader.setMat4("Model", model);
 
             glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }

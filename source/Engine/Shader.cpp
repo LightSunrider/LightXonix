@@ -31,39 +31,39 @@ void Shader::Use() {
     glUseProgram(this->m_ProgramId);
 }
 
-void Shader::setInt(const char *name, int &value) {
+void Shader::setInt(const char *name, int value) {
     glUniform1i(glGetUniformLocation(Id, name), value);
 }
 
-void Shader::setInt(const char *name, uint &value) {
+void Shader::setInt(const char *name, uint value) {
     glUniform1i(glGetUniformLocation(Id, name), value);
 }
 
-void Shader::setFloat(const char *name, float &value) {
+void Shader::setFloat(const char *name, float value) {
     glUniform1f(glGetUniformLocation(Id, name), value);
 }
 
-void Shader::setVec2(const char *name, glm::vec2 &value) {
+void Shader::setVec2(const char *name, glm::vec2 value) {
     glUniform2fv(glGetUniformLocation(Id, name), 1, &value[0]);
 }
 
-void Shader::setVec3(const char *name, glm::vec3 &value) {
+void Shader::setVec3(const char *name, glm::vec3 value) {
     glUniform3fv(glGetUniformLocation(Id, name), 1, &value[0]);
 }
 
-void Shader::setVec4(const char *name, glm::vec4 &value) {
+void Shader::setVec4(const char *name, glm::vec4 value) {
     glUniform4fv(glGetUniformLocation(Id, name), 1, &value[0]);
 }
 
-void Shader::setMat3(const char *name, glm::mat3 &value) {
+void Shader::setMat3(const char *name, glm::mat3 value) {
     glUniformMatrix3fv(glGetUniformLocation(Id, name), 1, GL_FALSE, &value[0][0]);
 }
 
-void Shader::setMat4(const char *name, glm::mat4 &value) {
+void Shader::setMat4(const char *name, glm::mat4 value) {
     glUniformMatrix4fv(glGetUniformLocation(Id, name), 1, GL_FALSE, &value[0][0]);
 }
 
-void Shader::setTexture(int block, const char *name, Texture &texture) {
+void Shader::setTexture(int block, const char *name, Texture texture) {
     glActiveTexture(GL_TEXTURE0 + block);
     glBindTexture(GL_TEXTURE_2D, texture.Id);
 }
