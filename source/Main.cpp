@@ -125,6 +125,8 @@ signed main() {
         phongShader.setVec3("Material.Ambient", glm::vec3(0.1f, 0.1f, 0.1f));
         phongShader.setVec3("Material.Diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
         phongShader.setVec3("Material.Specular", glm::vec3(0.3f, 0.3f, 0.3f));
+        phongShader.setFloat("Material.Shininess", 64.f);
+
         phongShader.setTexture(0, "Texture", simpleTexture);
 
         for (uint i = 0; i < 10; i++) {

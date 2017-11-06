@@ -10,6 +10,7 @@ struct sMaterial {
     vec3 Ambient;
     vec3 Diffuse;
     vec3 Specular;
+    float Shininess;
 };
 
 in vec2 Uv;
@@ -24,20 +25,20 @@ uniform sampler2D Texture;
 uniform sLight Light;
 uniform sMaterial Material;
 
-void main(){
-	vec3 materialDiffuse = texture(Texture, Uv).rgb;
-	vec3 materialAmbient = Material.Ambient * materialDiffuse;
-	vec3 materialSpecular = Material.Specular;
+void main() {
+    vec3 materialDiffuse = texture(Texture, Uv).rgb;
+    vec3 materialAmbient = Material.Ambient * materialDiffuse;
+    vec3 materialSpecular = Material.Specular;
 
-	vec3 normal = normalize(ViewNormal);
+    vec3 normal = normalize(ViewNormal);
     vec3 lightDirection = normalize(LightDirection);
 
-	float distance = length(Light.Position - Position);
-	float cosTheta = clamp(dot(normal, lightDirection), 0, 1);
-	float cosAlpha = clamp(dot(normal, reflect(-lightDirection, normal)), 0, 1);
+    float distance = length(Light.Position - Position);
+    float cosTheta = clamp(dot(normal, lightDirection), 0, 1);
+    float cosAlpha = clamp(dot(normal, reflect(-lightDirection, normal)), 0, 1);
 
-    materialDiffuse = materialDiffuse * Light.Color * Light.Power * cosTheta / pow(distance, 2);
-    materialSpecular = materialSpecular * Light.Color * Light.Power * pow(cosAlpha, 5) / pow(distance, 2);
+    materialDiffuse *= Light.Color * Light.Power * cosTheta / pow(distance, 2);
+    materialSpecular *= Light.Color * Light.Power * pow(cosAlpha, Material.Shininess) / pow(distance, 2);
 
-	Color = materialAmbient + materialDiffuse + materialSpecular;
+    Color = materialAmbient + materialDiffuse + materialSpecular;
 }

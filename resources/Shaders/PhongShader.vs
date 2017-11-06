@@ -28,6 +28,6 @@ void main() {
     Position = (Model * vec4(VertexPosition, 1)).xyz;
     ViewDirection = vec3(0, 0, 0) - (View * Model * vec4(VertexPosition, 1)).xyz;
     LightDirection = (View * vec4(Light.Position, 1)).xyz + ViewDirection;
-    ViewNormal = (View * Model * vec4(VertexNormal, 0)).xyz;
+    ViewNormal = mat3(transpose(inverse(Model))) * VertexNormal;
     Uv = VertexUv;
 }
