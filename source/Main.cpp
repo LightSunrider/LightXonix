@@ -16,7 +16,7 @@ signed main() {
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
 
-    glm::vec2 lastPos;
+    glm::vec2 lastPos = window.Input.GetCursorPosition();
     auto ProcessInput = [&]() {
         if (window.Input.IsKeyPressed(Key::ESCAPE)) {
             window.Close();
