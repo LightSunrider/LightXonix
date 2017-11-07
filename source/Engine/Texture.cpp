@@ -26,7 +26,7 @@ Texture::Texture() {
     if (!defaultInitialized) {
         glGenTextures(1, &defaultId);
         glBindTexture(GL_TEXTURE_2D, defaultId);
-        byte defaultTexture[4]{255, 255, 255, 255};
+        byte defaultTexture[4]{0, 0, 0, 255};
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, defaultTexture);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
