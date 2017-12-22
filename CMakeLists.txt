@@ -87,17 +87,12 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
 find_package(glfw3 3.2 REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} glfw)
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARIES})
-
 # gl3w
 find_package(gl3w REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} gl3w)
 
 # glm
-find_package(glm REQUIRED)
+find_package(glm 0.9.8 REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} glm)
 
 
