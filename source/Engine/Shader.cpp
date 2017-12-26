@@ -66,6 +66,7 @@ void Shader::setMat4(const char *name, glm::mat4 value) {
 void Shader::setTexture(int block, const char *name, Texture texture) {
     glActiveTexture(GL_TEXTURE0 + block);
     glBindTexture(GL_TEXTURE_2D, texture.Id);
+    setInt(name, block);
 }
 
 uint Shader::loadShader(Shader::Type type, const char *path) {
