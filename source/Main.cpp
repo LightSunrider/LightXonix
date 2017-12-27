@@ -10,6 +10,7 @@ signed main() {
 
     Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs");
     Texture simpleTexture("Textures/simple.dds");
+    Texture emptyTexture;
     Camera camera = Camera();
     Model cubeModel("Models/cube.obj");
 
@@ -123,11 +124,9 @@ signed main() {
         phongShader.setFloat("Light.Power", 2.5f);
 
         phongShader.setVec3("Material.Ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        phongShader.setVec3("Material.Diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        phongShader.setVec3("Material.Specular", glm::vec3(0.3f, 0.3f, 0.3f));
+        phongShader.setTexture(0, "Material.Diffuse", simpleTexture);
+        phongShader.setTexture(1, "Material.Specular", emptyTexture);
         phongShader.setFloat("Material.Shininess", 64.f);
-
-        phongShader.setTexture(0, "Texture", simpleTexture);
 
         for (uint i = 0; i < 10; i++) {
             glm::mat4 model;

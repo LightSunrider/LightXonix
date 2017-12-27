@@ -8,8 +8,8 @@ struct sLight {
 
 struct sMaterial {
     vec3 Ambient;
-    vec3 Diffuse;
-    vec3 Specular;
+    sampler2D Diffuse;
+    sampler2D Specular;
     float Shininess;
 };
 
@@ -21,14 +21,13 @@ in vec3 LightDirection;
 
 out vec3 Color;
 
-uniform sampler2D Texture;
 uniform sLight Light;
 uniform sMaterial Material;
 
 void main() {
-    vec3 materialDiffuse = texture(Texture, Uv).rgb;
+    vec3 materialDiffuse = texture(Material.Diffuse, Uv).rgb;
     vec3 materialAmbient = Material.Ambient * materialDiffuse;
-    vec3 materialSpecular = Material.Specular;
+    vec3 materialSpecular = texture(Material.Specular, Uv).rgb;
 
     vec3 normal = normalize(ViewNormal);
     vec3 lightDirection = normalize(LightDirection);
