@@ -9,10 +9,13 @@ signed main() {
     Window window = Window(800, 600, "LightXonix");
 
     Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs");
+    Shader skyboxShader = Shader("Shaders/SkyboxShader.vs", "Shaders/SkyboxShader.fs");
     Texture simpleTexture("Textures/simple.dds");
+    Texture skyboxTexture("Textures/skybox.dds");
     Texture emptyTexture;
     Camera camera = Camera();
     Model cubeModel("Models/cube.obj");
+    Model skyboxModel("Models/skybox.obj");
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
@@ -60,31 +63,60 @@ signed main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    uint VBO;
-    glGenVertexArrays(1, &VBO);
-    glBindVertexArray(VBO);
+    // Cube
+    uint cubeVBO;
+    glGenVertexArrays(1, &cubeVBO);
+    glBindVertexArray(cubeVBO);
 
-    uint vertexBuffer;
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    uint cubeVertexBuffer;
+    glGenBuffers(1, &cubeVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
     glBufferData(
         GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(glm::vec3), &cubeModel.Vertices[0], GL_STATIC_DRAW);
 
-    uint uvBuffer;
-    glGenBuffers(1, &uvBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+    uint cubeUvBuffer;
+    glGenBuffers(1, &cubeUvBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeUvBuffer);
     glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(glm::vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
 
-    uint normalBuffer;
-    glGenBuffers(1, &normalBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    uint cubeNormalBuffer;
+    glGenBuffers(1, &cubeNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeNormalBuffer);
     glBufferData(GL_ARRAY_BUFFER, cubeModel.Normals.size() * sizeof(glm::vec3), &cubeModel.Normals[0], GL_STATIC_DRAW);
 
-    uint elementBuffer;
-    glGenBuffers(1, &elementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+    uint cubeElementBuffer;
+    glGenBuffers(1, &cubeElementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeElementBuffer);
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER, cubeModel.Elements.size() * sizeof(ushort), &cubeModel.Elements[0], GL_STATIC_DRAW);
+
+    // Skybox
+    uint skyboxVBO;
+    glGenVertexArrays(1, &skyboxVBO);
+    glBindVertexArray(skyboxVBO);
+
+    uint skyboxVertexBuffer;
+    glGenBuffers(1, &skyboxVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(glm::vec3), &skyboxModel.Vertices[0], GL_STATIC_DRAW);
+
+    uint skyboxUvBuffer;
+    glGenBuffers(1, &skyboxUvBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxUvBuffer);
+    glBufferData(GL_ARRAY_BUFFER, skyboxModel.Uv.size() * sizeof(glm::vec2), &skyboxModel.Uv[0], GL_STATIC_DRAW);
+
+    uint skyboxNormalBuffer;
+    glGenBuffers(1, &skyboxNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxNormalBuffer);
+    glBufferData(
+        GL_ARRAY_BUFFER, skyboxModel.Normals.size() * sizeof(glm::vec3), &skyboxModel.Normals[0], GL_STATIC_DRAW);
+
+    uint skyboxElementBuffer;
+    glGenBuffers(1, &skyboxElementBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxElementBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, skyboxModel.Elements.size() * sizeof(ushort), &skyboxModel.Elements[0],
+                 GL_STATIC_DRAW);
 
     window.MakeContextCurrent();
     while (!window.ShouldClose()) {
@@ -98,24 +130,26 @@ signed main() {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        phongShader.Use();
         camera.Update();
 
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
         glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, cubeUvBuffer);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
         glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, cubeNormalBuffer);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeElementBuffer);
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
+
+        phongShader.Use();
+
         phongShader.setMat4("Projection", projection);
         phongShader.setMat4("View", camera.ViewMatrix);
 
@@ -140,13 +174,32 @@ signed main() {
         }
 
         /* skybox */ {
+            glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, skyboxUvBuffer);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            glEnableVertexAttribArray(2);
+            glBindBuffer(GL_ARRAY_BUFFER, skyboxNormalBuffer);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxElementBuffer);
+
+            skyboxShader.Use();
+
             glm::mat4 model;
             model = glm::translate(model, camera.Position);
             model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
-            phongShader.setMat4("Model", model);
+            skyboxShader.setMat4("Model", model);
+            skyboxShader.setMat4("Projection", projection);
+            skyboxShader.setMat4("View", camera.ViewMatrix);
+            skyboxShader.setTexture(0, "Texture", skyboxTexture);
 
-            glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
+            glDrawElements(GL_TRIANGLES, skyboxModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
 
         window.SwapBuffers();
