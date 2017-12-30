@@ -6,14 +6,19 @@
 using namespace le;
 
 signed main() {
-    Window window = Window(800, 600, "LightXonix");
+    Window window(800, 600, "LightXonix");
+    Camera camera;
 
-    Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs");
-    Shader skyboxShader = Shader("Shaders/SkyboxShader.vs", "Shaders/SkyboxShader.fs");
+    Shader::PreprocSettings preprocSettings;
+    preprocSettings.IncludePath = "Shaders/";
+
+    Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs", preprocSettings);
+    Shader skyboxShader = Shader("Shaders/SkyboxShader.vs", "Shaders/SkyboxShader.fs", preprocSettings);
+
     Texture simpleTexture("Textures/simple.dds");
     Texture skyboxTexture("Textures/skybox.dds");
     Texture emptyTexture;
-    Camera camera = Camera();
+
     Model cubeModel("Models/cube.obj");
     Model skyboxModel("Models/skybox.obj");
 

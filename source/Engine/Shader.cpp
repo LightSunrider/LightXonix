@@ -4,11 +4,29 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
+
+
+string trim(const string &str) {
+    size_t first = str.find_first_not_of(" \t\f\v\n\r");
+
+    if (string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(" \t\f\v\n\r");
+
+    return str.substr(first, (last - first + 1));
+}
+
+inline bool findDirective(const string &str, const string &directive) {
+    return str.find(directive) != string::npos;
+}
+
 namespace le {
 
-Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
-    uint vertex = loadShader(Type::Vertex, vertexPath);
-    uint fragment = loadShader(Type::Fragment, fragmentPath);
+Shader::Shader(const char *vertexPath, const char *fragmentPath, PreprocSettings &settings) {
+    uint vertex = makeShader(vertexPath, Type::Vertex, settings);
+    uint fragment = makeShader(fragmentPath, Type::Fragment, settings);
 
     m_ProgramId = glCreateProgram();
     glAttachShader(m_ProgramId, vertex);
@@ -69,24 +87,80 @@ void Shader::setTexture(int block, const char *name, Texture texture) {
     setInt(name, block);
 }
 
-uint Shader::loadShader(Shader::Type type, const char *path) {
-    std::string inputSourceCode;
-    std::ifstream file;
-    uint shaderId;
+string Shader::loadShaderCode(const char *path) {
+    ifstream file;
+    stringstream s;
 
-    file.exceptions(std::ifstream::failbit);
+    file.exceptions(ifstream::failbit);
     try {
         file.open(path);
-        std::stringstream s;
         s << file.rdbuf();
         file.close();
-        inputSourceCode = s.str();
     }
-    catch (std::ifstream::failure) {
-        throw ShaderException(Error::FILE_NOT_SUCCESSFULLY_READ);
+    catch (ifstream::failure e) {
+        throw ShaderException(Error::FILE_NOT_SUCCESSFULLY_READ, e.what());
     }
 
-    const char *sourceCode = inputSourceCode.c_str();
+    return s.str();
+}
+
+string Shader::customPreprocessor(std::string code, PreprocSettings &settings, bool root) {
+    istringstream inCode(code);
+    ostringstream outCode;
+
+    string s;
+    while (!inCode.eof()) {
+        getline(inCode, s);
+        s = trim(s);
+
+        if (findDirective(s, "#version")) {
+            if (root) {
+                outCode << s;
+            }
+        }
+        else if (findDirective(s, "#getdefine")) {
+            string defName = trim(s.substr(10));
+
+            if (settings.Definitions.find(defName) == settings.Definitions.end()) {
+                throw ShaderException(Error::PREPROCESSOR_NONE_DEFINITION, defName.c_str());
+            }
+            else {
+                outCode << "#define " << defName << ' ' << settings.Definitions.at(defName);
+            }
+        }
+        else if (findDirective(s, "#include")) {
+            string include = trim(s.substr(8));
+
+            if (include.length() < 3) {
+                throw ShaderException(Error::PREPROCESSOR_INVALID_INCLUDE);
+            }
+            if (include.at(0) == '\"') {
+                include.erase(0, 1);
+            }
+            if (include.at(include.length() - 1) == '\"') {
+                include.erase(include.length() - 1);
+            }
+
+            string includeCode;
+            includeCode = loadShaderCode((settings.IncludePath + include).c_str());
+            includeCode = customPreprocessor(includeCode, settings, false);
+
+            outCode << includeCode;
+        }
+        else {
+            outCode << s;
+        }
+
+        outCode << endl;
+    }
+
+    return outCode.str();
+}
+
+uint Shader::compileShader(Type type, string code) {
+    uint shaderId;
+    const char *sourceCode = code.c_str();
+
     shaderId = glCreateShader(getGlShaderType(type));
     glShaderSource(shaderId, 1, &sourceCode, nullptr);
     glCompileShader(shaderId);
@@ -100,6 +174,10 @@ uint Shader::loadShader(Shader::Type type, const char *path) {
     }
 
     return shaderId;
+}
+
+inline uint Shader::makeShader(const char *path, Type type, PreprocSettings &settings) {
+    return compileShader(type, customPreprocessor(loadShaderCode(path), settings));
 }
 
 uint Shader::getGlShaderType(Shader::Type t) {
