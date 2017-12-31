@@ -1,33 +1,21 @@
 #version 330 core
 
-struct sLight {
-    vec3 Position;
-    vec3 Color;
-    float Power;
-    float Distance;
-};
-
-layout(location = 0) in vec3 VertexPosition;
-layout(location = 1) in vec2 VertexUv;
-layout(location = 2) in vec3 VertexNormal;
+layout(location = 0) in vec3 vPosition;
+layout(location = 1) in vec2 vUv;
+layout(location = 2) in vec3 vNormal;
 
 out vec2 Uv;
 out vec3 Position;
 out vec3 ViewNormal;
-out vec3 ViewDirection;
-out vec3 LightDirection;
 
-uniform mat4 Model;
-uniform mat4 View;
-uniform mat4 Projection;
-uniform sLight Light;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main() {
-    gl_Position = Projection * View * Model * vec4(VertexPosition, 1.0f);
+    Position = vec3(model * vec4(vPosition, 1.0));
+    ViewNormal = normalize(mat3(transpose(inverse(model))) * vNormal);
+    Uv = vUv;
 
-    Position = (Model * vec4(VertexPosition, 1)).xyz;
-    ViewDirection = vec3(0, 0, 0) - (View * Model * vec4(VertexPosition, 1)).xyz;
-    LightDirection = (View * vec4(Light.Position, 1)).xyz + ViewDirection;
-    ViewNormal = mat3(transpose(inverse(Model))) * VertexNormal;
-    Uv = VertexUv;
+    gl_Position = projection * view * vec4(Position, 1.0);
 }

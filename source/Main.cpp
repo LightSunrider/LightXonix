@@ -10,6 +10,7 @@ signed main() {
     Camera camera;
 
     Shader::PreprocSettings preprocSettings;
+    preprocSettings.Definitions.insert(std::make_pair("POINT_LIGHTS", "1"));
     preprocSettings.IncludePath = "Shaders/";
 
     Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs", preprocSettings);
@@ -155,17 +156,21 @@ signed main() {
 
         phongShader.Use();
 
-        phongShader.setMat4("Projection", projection);
-        phongShader.setMat4("View", camera.ViewMatrix);
+        phongShader.setMat4("projection", projection);
+        phongShader.setMat4("view", camera.ViewMatrix);
+        phongShader.setVec3("cameraPosition", camera.Position);
 
-        phongShader.setVec3("Light.Position", glm::vec3(0.0f, 0.0f, 0.0f));
-        phongShader.setVec3("Light.Color", glm::vec3(1.0f, 1.0f, 1.0f));
-        phongShader.setFloat("Light.Power", 2.5f);
+        phongShader.setVec3("pointLights[0].position", glm::vec3(0.0f, 0.0f, 0.0f));
+        phongShader.setVec3("pointLights[0].ambient", glm::vec3(0.35f, 0.35f, 0.35f));
+        phongShader.setVec3("pointLights[0].diffuse", glm::vec3(0.95f, 0.95f, 0.95f));
+        phongShader.setVec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        phongShader.setFloat("pointLights[0].constant", 1.0f);
+        phongShader.setFloat("pointLights[0].linear", 0.09f);
+        phongShader.setFloat("pointLights[0].quadratic", 0.032f);
 
-        phongShader.setVec3("Material.Ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        phongShader.setTexture(0, "Material.Diffuse", simpleTexture);
-        phongShader.setTexture(1, "Material.Specular", emptyTexture);
-        phongShader.setFloat("Material.Shininess", 64.f);
+        phongShader.setTexture(0, "material.diffuse", simpleTexture);
+        phongShader.setTexture(1, "material.specular", emptyTexture);
+        phongShader.setFloat("material.shininess", 64.f);
 
         for (uint i = 0; i < 10; i++) {
             glm::mat4 model;
@@ -173,7 +178,7 @@ signed main() {
             float angle = 20.0f * i;
             model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-            phongShader.setMat4("Model", model);
+            phongShader.setMat4("model", model);
 
             glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
