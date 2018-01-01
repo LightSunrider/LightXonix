@@ -1,18 +1,22 @@
 #pragma once
 
+#include <exception>
 #include <string>
 
 namespace le {
 
-class Exception {
+class Exception : public std::exception {
 public:
-    Exception() {
-        Message = "";
-    }
-    Exception(const char *message) {
+    Exception() = default;
+
+    explicit Exception(const char *message) noexcept {
         Message = message;
     }
 
-    const char *Message;
+    virtual const char* what() const noexcept {
+        return Message.c_str();
+    }
+
+    std::string Message;
 };
 }
