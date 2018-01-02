@@ -32,7 +32,6 @@ set(SOURCE_CODE
     "source/Engine/Texture.cpp"
     "source/Engine/Texture.hpp"
 
-    "source/Engine/Camera.cpp"
     "source/Engine/Camera.hpp"
 
     "source/Engine/InputSystem.cpp"

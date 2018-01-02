@@ -2,6 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 using namespace le;
 
@@ -34,22 +35,28 @@ signed main() {
         }
 
         if (window.Input.IsKeyPressed(Key::W)) {
-            camera.Position += camera.getForward() * deltaTime * 10.0f;
+            camera.transform.position += camera.transform.Forward() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::S)) {
-            camera.Position -= camera.getForward() * deltaTime * 10.0f;
+            camera.transform.position -= camera.transform.Forward() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::A)) {
-            camera.Position += camera.getRight() * deltaTime * 10.0f;
+            camera.transform.position += camera.transform.Right() * deltaTime * 10.0f;
         }
         if (window.Input.IsKeyPressed(Key::D)) {
-            camera.Position -= camera.getRight() * deltaTime * 10.0f;
+            camera.transform.position -= camera.transform.Right() * deltaTime * 10.0f;
         }
 
         glm::vec2 cursorPos = window.Input.GetCursorPosition() - lastPos;
         lastPos = window.Input.GetCursorPosition();
-        camera.Rotation.x += cursorPos.y * deltaTime * 10.0f;
-        camera.Rotation.y += cursorPos.x * deltaTime * 10.0f;
+
+        float pitch = cursorPos.y * deltaTime * 10.0f;
+        float yaw = cursorPos.x * deltaTime * 10.0f;
+
+        glm::quat quatPitch = glm::angleAxis(glm::radians(pitch), glm::vec3(1, 0, 0));
+        glm::quat quatYaw = glm::angleAxis(glm::radians(yaw), glm::vec3(0, 1, 0));
+
+        camera.transform.rotation = glm::normalize(quatPitch * camera.transform.rotation * quatYaw);
     };
 
     // clang-format off
@@ -136,7 +143,7 @@ signed main() {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        camera.Update();
+        camera.Update(deltaTime);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
@@ -152,13 +159,11 @@ signed main() {
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeElementBuffer);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
-
         phongShader.Use();
 
-        phongShader.setMat4("projection", projection);
+        phongShader.setMat4("projection", camera.ProjectionMatrix);
         phongShader.setMat4("view", camera.ViewMatrix);
-        phongShader.setVec3("cameraPosition", camera.Position);
+        phongShader.setVec3("cameraPosition", camera.transform.position);
 
         phongShader.setVec3("pointLights[0].position", glm::vec3(0.0f, 0.0f, 0.0f));
         phongShader.setVec3("pointLights[0].ambient", glm::vec3(0.35f, 0.35f, 0.35f));
@@ -201,11 +206,11 @@ signed main() {
             skyboxShader.Use();
 
             glm::mat4 model;
-            model = glm::translate(model, camera.Position);
+            model = glm::translate(model, camera.transform.position);
             model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
 
             skyboxShader.setMat4("Model", model);
-            skyboxShader.setMat4("Projection", projection);
+            skyboxShader.setMat4("Projection", camera.ProjectionMatrix);
             skyboxShader.setMat4("View", camera.ViewMatrix);
             skyboxShader.setTexture(0, "Texture", skyboxTexture);
 

@@ -9,7 +9,7 @@ class Exception : public std::exception {
 public:
     Exception() = default;
 
-    explicit Exception(const char *message) noexcept {
+    explicit Exception(const char* message) noexcept {
         Message = message;
     }
 

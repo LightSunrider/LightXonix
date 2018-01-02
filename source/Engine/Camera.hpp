@@ -4,25 +4,37 @@
 
 #include <glm/gtc/quaternion.hpp>
 
+using glm::mat4;
+using glm::vec3;
+
 namespace le {
+
 class Camera : public GameObject {
 public:
-    Camera(glm::vec3 position = glm::vec3(), glm::vec3 rotation = glm::vec3(), glm::vec3 scale = glm::vec3());
+    explicit Camera() = default;
 
-    glm::mat4 &ViewMatrix = m_ViewMatrix;
-    glm::quat &Orientation = m_Orientation;
+    explicit Camera(const Transform &transform, float fov, float aspect, float near, float far)
+        : GameObject(transform), fov(fov), aspect(aspect), near(near), far(far) {}
 
-    glm::vec3 getRight() const;
-    glm::vec3 getForward() const;
+    ~Camera() override = default;
 
-    void Update() {
-        OnUpdate();
-    }
+    mat4 &ViewMatrix = m_ViewMatrix;
+    mat4 &ProjectionMatrix = m_ProjectionMatrix;
+
+    float fov = 45.0f;
+    float aspect = 4.0f / 3.0f;
+    float near = 0.1f;
+    float far = 500.0f;
 
 private:
-    void OnUpdate();
+    bool onUpdate(float delta) override {
+        m_ViewMatrix = glm::mat4_cast(transform.rotation) * translate(mat4(), -transform.position);
+        m_ProjectionMatrix = glm::perspective(glm::radians(fov), aspect, near, far);
 
-    glm::quat m_Orientation = glm::quat();
-    glm::mat4 m_ViewMatrix = glm::mat4();
+        return true;
+    }
+
+    mat4 m_ViewMatrix = mat4();
+    mat4 m_ProjectionMatrix = mat4();
 };
 }
