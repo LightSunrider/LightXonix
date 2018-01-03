@@ -159,21 +159,21 @@ signed main() {
 
         phongShader.Use();
 
-        phongShader.setMat4("projection", camera.ProjectionMatrix);
-        phongShader.setMat4("view", camera.ViewMatrix);
-        phongShader.setVec3("cameraPosition", camera.transform.position);
+        phongShader.set("projection", camera.ProjectionMatrix);
+        phongShader.set("view", camera.ViewMatrix);
+        phongShader.set("cameraPosition", camera.transform.position);
 
-        phongShader.setVec3("pointLights[0].position", vec3(0.0f, 0.0f, 0.0f));
-        phongShader.setVec3("pointLights[0].ambient", vec3(0.35f, 0.35f, 0.35f));
-        phongShader.setVec3("pointLights[0].diffuse", vec3(0.95f, 0.95f, 0.95f));
-        phongShader.setVec3("pointLights[0].specular", vec3(1.0f, 1.0f, 1.0f));
-        phongShader.setFloat("pointLights[0].constant", 1.0f);
-        phongShader.setFloat("pointLights[0].linear", 0.09f);
-        phongShader.setFloat("pointLights[0].quadratic", 0.032f);
+        phongShader.set("pointLights[0].position", vec3(0.0f, 0.0f, 0.0f));
+        phongShader.set("pointLights[0].ambient", vec3(0.35f, 0.35f, 0.35f));
+        phongShader.set("pointLights[0].diffuse", vec3(0.95f, 0.95f, 0.95f));
+        phongShader.set("pointLights[0].specular", vec3(1.0f, 1.0f, 1.0f));
+        phongShader.set("pointLights[0].constant", 1.0f);
+        phongShader.set("pointLights[0].linear", 0.09f);
+        phongShader.set("pointLights[0].quadratic", 0.032f);
 
-        phongShader.setTexture(0, "material.diffuse", simpleTexture);
-        phongShader.setTexture(1, "material.specular", emptyTexture);
-        phongShader.setFloat("material.shininess", 64.f);
+        phongShader.set("material.diffuse", 0, simpleTexture);
+        phongShader.set("material.specular", 1, emptyTexture);
+        phongShader.set("material.shininess", 64.f);
 
         for (uint i = 0; i < 10; i++) {
             mat4 model;
@@ -181,7 +181,7 @@ signed main() {
             float angle = 20.0f * i;
             model = rotate(model, radians(angle), vec3(1.0f, 0.3f, 0.5f));
 
-            phongShader.setMat4("model", model);
+            phongShader.set("model", model);
 
             glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
@@ -207,10 +207,10 @@ signed main() {
             model = translate(model, camera.transform.position);
             model = scale(model, vec3(500.0f, 500.0f, 500.0f));
 
-            skyboxShader.setMat4("Model", model);
-            skyboxShader.setMat4("Projection", camera.ProjectionMatrix);
-            skyboxShader.setMat4("View", camera.ViewMatrix);
-            skyboxShader.setTexture(0, "Texture", skyboxTexture);
+            skyboxShader.set("Model", model);
+            skyboxShader.set("Projection", camera.ProjectionMatrix);
+            skyboxShader.set("View", camera.ViewMatrix);
+            skyboxShader.set("Texture", 0, skyboxTexture);
 
             glDrawElements(GL_TRIANGLES, skyboxModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }
