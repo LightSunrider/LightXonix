@@ -1,4 +1,4 @@
-#include "Engine/Model.hpp"
+#include "Engine/Mesh.hpp"
 
 #include <cstring>
 #include <fstream>
@@ -7,16 +7,7 @@
 
 namespace le {
 
-Model::Model() = default;
-
-Model::Model(Model &model) {
-    Vertices = model.Vertices;
-    Uv = model.Uv;
-    Normals = model.Normals;
-    Elements = model.Elements;
-}
-
-Model::Model(const char *path) {
+Mesh::Mesh(const char *path) {
     ObjRawData rawObj = loadObj(path);
     ObjData obj = indexVertices(rawObj);
     obj = indexFragments(obj);
@@ -27,25 +18,14 @@ Model::Model(const char *path) {
     Elements = obj.Elements;
 }
 
-Model &Model::operator=(const Model &other) {
-    if (this != &other) {
-        Vertices = other.Vertices;
-        Uv = other.Uv;
-        Normals = other.Normals;
-        Elements = other.Elements;
-    }
-
-    return *this;
-}
-
-Model::ObjRawData Model::loadObj(const char *path) {
+Mesh::ObjRawData Mesh::loadObj(const char *path) {
     ObjRawData data;
     std::ifstream fs;
 
     fs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fs = std::ifstream(path, std::ios::binary);
     if (fs.fail()) {
-        throw ModelException(Error::FILE_NOT_FOUND);
+        throw MeshException(Error::FILE_NOT_FOUND);
     }
 
     std::string line;
@@ -90,7 +70,7 @@ Model::ObjRawData Model::loadObj(const char *path) {
     return data;
 }
 
-Model::ObjData Model::indexVertices(ObjRawData &obj) {
+Mesh::ObjData Mesh::indexVertices(ObjRawData &obj) {
     ObjData data;
 
     for (uint i = 0; i < obj.fv.size(); i++) {
@@ -110,7 +90,7 @@ Model::ObjData Model::indexVertices(ObjRawData &obj) {
     return data;
 }
 
-Model::ObjData Model::indexFragments(ObjData &obj) {
+Mesh::ObjData Mesh::indexFragments(ObjData &obj) {
     struct VertexData {
         glm::vec3 position;
         glm::vec2 uv;

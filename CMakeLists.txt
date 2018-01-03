@@ -40,8 +40,8 @@ set(SOURCE_CODE
 
     "source/Engine/GameObject.hpp"
 
-    "source/Engine/Model.cpp"
-    "source/Engine/Model.hpp"
+    "source/Engine/Mesh.cpp"
+    "source/Engine/Mesh.hpp"
 )
 source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${SOURCE_CODE})
 # ------------

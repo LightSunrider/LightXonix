@@ -21,8 +21,8 @@ signed main() {
     Texture skyboxTexture("Textures/skybox.dds");
     Texture emptyTexture;
 
-    Model cubeModel("Models/cube.obj");
-    Model skyboxModel("Models/skybox.obj");
+    Mesh cubeModel("Models/cube.obj");
+    Mesh skyboxModel("Models/skybox.obj");
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;

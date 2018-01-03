@@ -8,13 +8,11 @@
 
 namespace le {
 
-class Model {
+class Mesh {
 public:
-    Model();
-    Model(Model& model);
-    Model(const char* path);
-
-    Model& operator=(const Model& other);
+    Mesh() = default;
+    Mesh(Mesh& model) = default;
+    Mesh(const char* path);
 
     std::vector<glm::vec3> Vertices;
     std::vector<glm::vec2> Uv;
@@ -23,10 +21,10 @@ public:
 
     enum class Error { UNKNOWN, FILE_NOT_FOUND };
 
-    class ModelException : public Exception {
+    class MeshException : public Exception {
     public:
-        ModelException(Error type) : Exception(), ErrorType(type) {}
-        ModelException(Error type, const char* message) : Exception(message), ErrorType(type) {}
+        MeshException(Error type) : Exception(), ErrorType(type) {}
+        MeshException(Error type, const char* message) : Exception(message), ErrorType(type) {}
 
         Error ErrorType = Error::UNKNOWN;
     };
