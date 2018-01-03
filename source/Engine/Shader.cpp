@@ -24,7 +24,7 @@ inline bool findDirective(const string &str, const string &directive) {
 
 namespace le {
 
-Shader::Shader(const char *vertexPath, const char *fragmentPath, PreprocSettings &settings) {
+Shader::Shader(const char *vertexPath, const char *fragmentPath, const PreprocSettings &settings) {
     uint vertex = makeShader(vertexPath, Type::Vertex, settings);
     uint fragment = makeShader(fragmentPath, Type::Fragment, settings);
 
@@ -104,9 +104,13 @@ string Shader::loadShaderCode(const char *path) {
     return s.str();
 }
 
-string Shader::customPreprocessor(std::string code, PreprocSettings &settings, bool root) {
+std::string Shader::customPreprocessor(std::string code, const PreprocSettings &settings, PreprocData data) {
     istringstream inCode(code);
     ostringstream outCode;
+
+    if (data.included[data.currentPath]) {
+        return outCode.str();
+    }
 
     string s;
     while (!inCode.eof()) {
@@ -114,7 +118,7 @@ string Shader::customPreprocessor(std::string code, PreprocSettings &settings, b
         s = trim(s);
 
         if (findDirective(s, "#version")) {
-            if (root) {
+            if (data.root) {
                 outCode << s;
             }
         }
@@ -143,9 +147,12 @@ string Shader::customPreprocessor(std::string code, PreprocSettings &settings, b
 
             string includeCode;
             includeCode = loadShaderCode((settings.IncludePath + include).c_str());
-            includeCode = customPreprocessor(includeCode, settings, false);
+            includeCode = customPreprocessor(includeCode, settings, PreprocData(include, false, data.included));
 
             outCode << includeCode;
+        }
+        else if (findDirective(s, "#pragma once")) {
+            data.included[data.currentPath] = true;
         }
         else {
             outCode << s;
@@ -176,8 +183,8 @@ uint Shader::compileShader(Type type, string code) {
     return shaderId;
 }
 
-inline uint Shader::makeShader(const char *path, Type type, PreprocSettings &settings) {
-    return compileShader(type, customPreprocessor(loadShaderCode(path), settings));
+inline uint Shader::makeShader(const char *path, Type type, const PreprocSettings &settings) {
+    return compileShader(type, customPreprocessor(loadShaderCode(path), settings, PreprocData(path)));
 }
 
 uint Shader::getGlShaderType(Shader::Type t) {

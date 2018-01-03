@@ -1,4 +1,7 @@
 #version 330 core
+#pragma once
+
+#include "Material/PhongMaterial.glsl"
 
 struct PointLight {
     vec3 position;

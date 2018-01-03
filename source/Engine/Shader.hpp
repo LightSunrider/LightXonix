@@ -6,21 +6,21 @@
 
 #include <GL/gl3w.h>
 #include <glm/glm.hpp>
-#include <map>
 #include <string>
+#include <unordered_map>
 
 namespace le {
 
 class Shader {
 public:
-    typedef std::map<std::string, std::string> PreprocDefinitions;
+    typedef std::unordered_map<std::string, std::string> PreprocDefinitions;
 
     struct PreprocSettings {
         PreprocDefinitions Definitions;
         std::string IncludePath;
     };
 
-    Shader(const char *vertexPath, const char *fragmentPath, PreprocSettings &settings);
+    Shader(const char *vertexPath, const char *fragmentPath, const PreprocSettings &settings);
     void Use();
 
     uint &Id = m_ProgramId;
@@ -56,10 +56,21 @@ public:
 private:
     enum Type { Vertex, Fragment };
 
+    typedef std::unordered_map<std::string, bool> IncludeList;
+
+    struct PreprocData {
+        std::string currentPath;
+        bool root = true;
+        IncludeList included;
+
+        PreprocData(std::string currentPath, bool root = true, IncludeList included = IncludeList())
+            : currentPath(currentPath), root(root), included(included) {}
+    };
+
     std::string loadShaderCode(const char *path);
-    std::string customPreprocessor(std::string code, PreprocSettings &settings, bool root = true);
+    std::string customPreprocessor(std::string code, const PreprocSettings &settings, PreprocData data);
     uint compileShader(Type type, std::string code);
-    inline uint makeShader(const char *path, Type type, PreprocSettings &settings);
+    inline uint makeShader(const char *path, Type type, const PreprocSettings &settings);
     uint getGlShaderType(Type t);
 
     uint m_ProgramId;

@@ -1,4 +1,5 @@
 #version 330 core
+#pragma once
 
 struct Material {
     sampler2D diffuse;

@@ -2,8 +2,8 @@
 
 #getdefine POINT_LIGHTS
 
-#include "Material/PhongMaterial.glsl"
 #include "Light/PointLight.glsl"
+#include "Material/PhongMaterial.glsl"
 
 in vec2 Uv;
 in vec3 Position;
