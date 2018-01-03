@@ -5,6 +5,7 @@
 #include <iostream>
 
 using namespace le;
+using namespace glm;
 
 signed main() {
     Window window(800, 600, "LightXonix");
@@ -27,7 +28,7 @@ signed main() {
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
 
-    glm::vec2 lastPos = window.Input.GetCursorPosition();
+    vec2 lastPos = window.Input.GetCursorPosition();
     auto ProcessInput = [&]() {
         if (window.Input.IsKeyPressed(Key::ESCAPE)) {
             window.Close();
@@ -47,30 +48,30 @@ signed main() {
             camera.transform.position -= camera.transform.Right() * deltaTime * 10.0f;
         }
 
-        glm::vec2 cursorPos = window.Input.GetCursorPosition() - lastPos;
+        vec2 cursorPos = window.Input.GetCursorPosition() - lastPos;
         lastPos = window.Input.GetCursorPosition();
 
         float pitch = cursorPos.y * deltaTime * 10.0f;
         float yaw = cursorPos.x * deltaTime * 10.0f;
 
-        glm::quat quatPitch = glm::angleAxis(glm::radians(pitch), glm::vec3(1, 0, 0));
-        glm::quat quatYaw = glm::angleAxis(glm::radians(yaw), glm::vec3(0, 1, 0));
+        quat quatPitch = angleAxis(radians(pitch), vec3(1, 0, 0));
+        quat quatYaw = angleAxis(radians(yaw), vec3(0, 1, 0));
 
-        camera.transform.rotation = glm::normalize(quatPitch * camera.transform.rotation * quatYaw);
+        camera.transform.rotation = normalize(quatPitch * camera.transform.rotation * quatYaw);
     };
 
     // clang-format off
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  -2.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
+    vec3 cubePositions[] = {
+        vec3( 0.0f,  0.0f, -2.0f),
+        vec3( 2.0f,  5.0f, -15.0f),
+        vec3(-1.5f, -2.2f, -2.5f),
+        vec3(-3.8f, -2.0f, -12.3f),
+        vec3( 2.4f, -0.4f, -3.5f),
+        vec3(-1.7f,  3.0f, -7.5f),
+        vec3( 1.3f, -2.0f, -2.5f),
+        vec3( 1.5f,  2.0f, -2.5f),
+        vec3( 1.5f,  0.2f, -1.5f),
+        vec3(-1.3f,  1.0f, -1.5f)
     };
     // clang-format on
 
@@ -84,18 +85,17 @@ signed main() {
     uint cubeVertexBuffer;
     glGenBuffers(1, &cubeVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
-    glBufferData(
-        GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(glm::vec3), &cubeModel.Vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(vec3), &cubeModel.Vertices[0], GL_STATIC_DRAW);
 
     uint cubeUvBuffer;
     glGenBuffers(1, &cubeUvBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, cubeUvBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(glm::vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
 
     uint cubeNormalBuffer;
     glGenBuffers(1, &cubeNormalBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, cubeNormalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Normals.size() * sizeof(glm::vec3), &cubeModel.Normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeModel.Normals.size() * sizeof(vec3), &cubeModel.Normals[0], GL_STATIC_DRAW);
 
     uint cubeElementBuffer;
     glGenBuffers(1, &cubeElementBuffer);
@@ -111,19 +111,17 @@ signed main() {
     uint skyboxVertexBuffer;
     glGenBuffers(1, &skyboxVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
-    glBufferData(
-        GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(glm::vec3), &skyboxModel.Vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(vec3), &skyboxModel.Vertices[0], GL_STATIC_DRAW);
 
     uint skyboxUvBuffer;
     glGenBuffers(1, &skyboxUvBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxUvBuffer);
-    glBufferData(GL_ARRAY_BUFFER, skyboxModel.Uv.size() * sizeof(glm::vec2), &skyboxModel.Uv[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, skyboxModel.Uv.size() * sizeof(vec2), &skyboxModel.Uv[0], GL_STATIC_DRAW);
 
     uint skyboxNormalBuffer;
     glGenBuffers(1, &skyboxNormalBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxNormalBuffer);
-    glBufferData(
-        GL_ARRAY_BUFFER, skyboxModel.Normals.size() * sizeof(glm::vec3), &skyboxModel.Normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, skyboxModel.Normals.size() * sizeof(vec3), &skyboxModel.Normals[0], GL_STATIC_DRAW);
 
     uint skyboxElementBuffer;
     glGenBuffers(1, &skyboxElementBuffer);
@@ -165,10 +163,10 @@ signed main() {
         phongShader.setMat4("view", camera.ViewMatrix);
         phongShader.setVec3("cameraPosition", camera.transform.position);
 
-        phongShader.setVec3("pointLights[0].position", glm::vec3(0.0f, 0.0f, 0.0f));
-        phongShader.setVec3("pointLights[0].ambient", glm::vec3(0.35f, 0.35f, 0.35f));
-        phongShader.setVec3("pointLights[0].diffuse", glm::vec3(0.95f, 0.95f, 0.95f));
-        phongShader.setVec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        phongShader.setVec3("pointLights[0].position", vec3(0.0f, 0.0f, 0.0f));
+        phongShader.setVec3("pointLights[0].ambient", vec3(0.35f, 0.35f, 0.35f));
+        phongShader.setVec3("pointLights[0].diffuse", vec3(0.95f, 0.95f, 0.95f));
+        phongShader.setVec3("pointLights[0].specular", vec3(1.0f, 1.0f, 1.0f));
         phongShader.setFloat("pointLights[0].constant", 1.0f);
         phongShader.setFloat("pointLights[0].linear", 0.09f);
         phongShader.setFloat("pointLights[0].quadratic", 0.032f);
@@ -178,10 +176,10 @@ signed main() {
         phongShader.setFloat("material.shininess", 64.f);
 
         for (uint i = 0; i < 10; i++) {
-            glm::mat4 model;
-            model = glm::translate(model, cubePositions[i]);
+            mat4 model;
+            model = translate(model, cubePositions[i]);
             float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = rotate(model, radians(angle), vec3(1.0f, 0.3f, 0.5f));
 
             phongShader.setMat4("model", model);
 
@@ -205,9 +203,9 @@ signed main() {
 
             skyboxShader.Use();
 
-            glm::mat4 model;
-            model = glm::translate(model, camera.transform.position);
-            model = glm::scale(model, glm::vec3(500.0f, 500.0f, 500.0f));
+            mat4 model;
+            model = translate(model, camera.transform.position);
+            model = scale(model, vec3(500.0f, 500.0f, 500.0f));
 
             skyboxShader.setMat4("Model", model);
             skyboxShader.setMat4("Projection", camera.ProjectionMatrix);
