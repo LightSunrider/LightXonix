@@ -82,16 +82,23 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
 )
 # ------------
 
+set(DEPENDENCES_PATH "${PROJECT_SOURCE_DIR}/dependences")
+
 # GLFW
-find_package(glfw3 3.2 REQUIRED)
+set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
+set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
+set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Build the GLFW documentation")
+set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
+
+add_subdirectory("${DEPENDENCES_PATH}/glfw")
 target_link_libraries(${EXECUTABLE_NAME} glfw)
 
 # gl3w
-find_package(gl3w REQUIRED)
+add_subdirectory("${DEPENDENCES_PATH}/gl3w")
 target_link_libraries(${EXECUTABLE_NAME} gl3w)
 
 # glm
-find_package(glm 0.9.8 REQUIRED)
+add_subdirectory("${DEPENDENCES_PATH}/glm")
 target_link_libraries(${EXECUTABLE_NAME} glm)
 
 
