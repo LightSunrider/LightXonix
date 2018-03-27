@@ -93,9 +93,17 @@ set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
 add_subdirectory("${DEPENDENCES_PATH}/glfw")
 target_link_libraries(${EXECUTABLE_NAME} glfw)
 
-# gl3w
-add_subdirectory("${DEPENDENCES_PATH}/gl3w")
-target_link_libraries(${EXECUTABLE_NAME} gl3w)
+# glad
+set(GLAD_PROFILE "core")
+set(GLAD_API "gl=3.3")
+set(GLAD_NO_LOADER ON)
+set(GLAD_EXTENSIONS
+    "GL_EXT_texture_compression_s3tc"
+)
+
+add_subdirectory("${DEPENDENCES_PATH}/glad")
+target_link_libraries(${EXECUTABLE_NAME} glad)
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${GLAD_INCLUDE_DIRS})
 
 # glm
 add_subdirectory("${DEPENDENCES_PATH}/glm")

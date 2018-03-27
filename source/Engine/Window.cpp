@@ -1,6 +1,6 @@
 #include "Engine/Window.hpp"
 
-#include <GL/gl3w.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 using namespace std;
@@ -65,7 +65,7 @@ void Window::createWindow(WindowSettings settings) {
 
     // gl3w initialization
     if (!s_LibrariesInitialized) {
-        gl3wInit();
+        gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
         s_LibrariesInitialized = true;
     }

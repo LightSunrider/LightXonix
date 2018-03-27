@@ -4,7 +4,7 @@
 #include "Engine/Types.hpp"
 #include "Texture.hpp"
 
-#include <GL/gl3w.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
