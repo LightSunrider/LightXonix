@@ -1,4 +1,5 @@
 ﻿#pragma once
+// clang-format off
 
 namespace le {
 
