@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 
-# Source files
+#Source files
 set(PROJECT_SRC
+    "source/CMakeLists.txt"
+
     "source/Main.cpp"
 
     "source/Engine/Engine.hpp"
@@ -30,8 +32,10 @@ set(PROJECT_SRC
     "source/Engine/Mesh.cpp"
     "source/Engine/Mesh.hpp"
 )
-# ----------
+#----------
 
-source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "source" FILES ${PROJECT_SRC})
+set(PROJECT_SRC ${PROJECT_SRC} PARENT_SCOPE)
 
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SRC})
+set(_FORMAT_PROJECT_SRC ${PROJECT_SRC})
+list(REMOVE_ITEM _FORMAT_PROJECT_SRC "source/CMakeLists.txt")
+set(_FORMAT_PROJECT_SRC ${_FORMAT_PROJECT_SRC} PARENT_SCOPE)

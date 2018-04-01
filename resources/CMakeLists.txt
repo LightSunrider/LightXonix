@@ -28,14 +28,12 @@ set(PROJECT_RES_TEXTURES
 # ----------
 
 set(PROJECT_RES
+    "resources/CMakeLists.txt"
     ${PROJECT_RES_MODELS}
     ${PROJECT_RES_SHADERS}
     ${PROJECT_RES_TEXTURES}
-    "CMakeLists.txt"
 )
 
-source_group(TREE "${PROJECT_SOURCE_DIR}/resources" PREFIX "resources" FILES ${PROJECT_RES})
-
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_RES})
-
 set(PROJECT_RES ${PROJECT_RES} PARENT_SCOPE)
+
+set(PROJECT_RES_SHADERS ${_FORMAT_PROJECT_RES_SHADERS} PARENT_SCOPE)
