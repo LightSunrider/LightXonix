@@ -31,6 +31,8 @@ set(PROJECT_SRC
 
     "source/Engine/Mesh.cpp"
     "source/Engine/Mesh.hpp"
+
+    "source/Engine/Material.hpp"
 )
 #----------
 
