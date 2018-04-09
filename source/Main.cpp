@@ -24,6 +24,9 @@ signed main() {
 
     PhongMaterial phongMaterial(simpleTexture, emptyTexture, 64.0f);
 
+    PointLight pointLights[1];
+    pointLights[0] = PointLight();
+
     Mesh cubeModel("Models/cube.obj");
     Mesh skyboxModel("Models/skybox.obj");
 
@@ -165,14 +168,7 @@ signed main() {
         phongShader.set("view", camera.ViewMatrix);
         phongShader.set("cameraPosition", camera.transform.position);
 
-        phongShader.set("pointLights[0].position", vec3(0.0f, 0.0f, 0.0f));
-        phongShader.set("pointLights[0].ambient", vec3(0.35f, 0.35f, 0.35f));
-        phongShader.set("pointLights[0].diffuse", vec3(0.95f, 0.95f, 0.95f));
-        phongShader.set("pointLights[0].specular", vec3(1.0f, 1.0f, 1.0f));
-        phongShader.set("pointLights[0].constant", 1.0f);
-        phongShader.set("pointLights[0].linear", 0.09f);
-        phongShader.set("pointLights[0].quadratic", 0.032f);
-
+        pointLights[0].Use(0, phongShader);
         phongMaterial.Use(phongShader);
 
         for (uint i = 0; i < 10; i++) {

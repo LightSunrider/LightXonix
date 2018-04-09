@@ -3,6 +3,7 @@
 #include "Engine/Camera.hpp"
 #include "Engine/Exception.hpp"
 #include "Engine/InputSystem.hpp"
+#include "Engine/Light.hpp"
 #include "Engine/Material.hpp"
 #include "Engine/Mesh.hpp"
 #include "Engine/Shader.hpp"
