@@ -22,7 +22,7 @@ signed main() {
     Texture skyboxTexture("Textures/skybox.dds");
     Texture emptyTexture;
 
-    PhongMaterial phongMaterial(phongShader, simpleTexture, emptyTexture, 64.0f);
+    PhongMaterial phongMaterial(simpleTexture, emptyTexture, 64.0f);
 
     Mesh cubeModel("Models/cube.obj");
     Mesh skyboxModel("Models/skybox.obj");
@@ -173,7 +173,7 @@ signed main() {
         phongShader.set("pointLights[0].linear", 0.09f);
         phongShader.set("pointLights[0].quadratic", 0.032f);
 
-        phongMaterial.Use();
+        phongMaterial.Use(phongShader);
 
         for (uint i = 0; i < 10; i++) {
             mat4 model;
