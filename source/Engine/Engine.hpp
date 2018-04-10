@@ -6,6 +6,7 @@
 #include "Engine/Light.hpp"
 #include "Engine/Material.hpp"
 #include "Engine/Mesh.hpp"
+#include "Engine/Model.hpp"
 #include "Engine/Shader.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Types.hpp"

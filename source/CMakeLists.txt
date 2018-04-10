@@ -35,6 +35,8 @@ set(PROJECT_SRC
     "source/Engine/Material.hpp"
 
     "source/Engine/Light.hpp"
+
+    "source/Engine/Model.hpp"
 )
 #----------
 
