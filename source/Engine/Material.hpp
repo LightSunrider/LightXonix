@@ -8,12 +8,16 @@ namespace le {
 class IMaterial {
 public:
     virtual void Use(Shader &shader) = 0;
+
+    virtual ~IMaterial() = default;
 };
 
-class PhongMaterial : IMaterial {
+class PhongMaterial : public IMaterial {
 public:
     PhongMaterial(Texture diffuse, Texture specular, float shininess)
         : diffuse(diffuse), specular(specular), shininess(shininess) {}
+
+    virtual ~PhongMaterial() = default;
 
     void Use(Shader &shader) override {
         shader.set("material.diffuse", 0, diffuse);
