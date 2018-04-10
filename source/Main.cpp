@@ -27,8 +27,10 @@ signed main() {
     PointLight pointLights[1];
     pointLights[0] = PointLight();
 
-    Mesh cubeModel("Models/cube.obj");
+    Mesh cubeMesh("Models/cube.obj");
     Mesh skyboxModel("Models/skybox.obj");
+
+    Model cubeModel(cubeMesh, phongShader, &phongMaterial);
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
@@ -65,48 +67,14 @@ signed main() {
         camera.transform.rotation = normalize(quatPitch * camera.transform.rotation * quatYaw);
     };
 
-    // clang-format off
-    vec3 cubePositions[] = {
-        vec3( 0.0f,  0.0f, -2.0f),
-        vec3( 2.0f,  5.0f, -15.0f),
-        vec3(-1.5f, -2.2f, -2.5f),
-        vec3(-3.8f, -2.0f, -12.3f),
-        vec3( 2.4f, -0.4f, -3.5f),
-        vec3(-1.7f,  3.0f, -7.5f),
-        vec3( 1.3f, -2.0f, -2.5f),
-        vec3( 1.5f,  2.0f, -2.5f),
-        vec3( 1.5f,  0.2f, -1.5f),
-        vec3(-1.3f,  1.0f, -1.5f)
-    };
-    // clang-format on
+    GameObject cubeObjects[] = {
+        GameObject(Transform(vec3(0.0f, 0.0f, -2.0f))),   GameObject(Transform(vec3(2.0f, 5.0f, -15.0f))),
+        GameObject(Transform(vec3(-1.5f, -2.2f, -2.5f))), GameObject(Transform(vec3(-3.8f, -2.0f, -12.3f))),
+        GameObject(Transform(vec3(2.4f, -0.4f, -3.5f))),  GameObject(Transform(vec3(-1.7f, 3.0f, -7.5f))),
+        GameObject(Transform(vec3(1.3f, -2.0f, -2.5f))),  GameObject(Transform(vec3(1.5f, 2.0f, -2.5f))),
+        GameObject(Transform(vec3(1.5f, 0.2f, -1.5f))),   GameObject(Transform(vec3(-1.3f, 1.0f, -1.5f)))};
 
     glEnable(GL_DEPTH_TEST);
-
-    // Cube
-    uint cubeVBO;
-    glGenVertexArrays(1, &cubeVBO);
-    glBindVertexArray(cubeVBO);
-
-    uint cubeVertexBuffer;
-    glGenBuffers(1, &cubeVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(vec3), &cubeModel.Vertices[0], GL_STATIC_DRAW);
-
-    uint cubeUvBuffer;
-    glGenBuffers(1, &cubeUvBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeUvBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Uv.size() * sizeof(vec2), &cubeModel.Uv[0], GL_STATIC_DRAW);
-
-    uint cubeNormalBuffer;
-    glGenBuffers(1, &cubeNormalBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeNormalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Normals.size() * sizeof(vec3), &cubeModel.Normals[0], GL_STATIC_DRAW);
-
-    uint cubeElementBuffer;
-    glGenBuffers(1, &cubeElementBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeElementBuffer);
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER, cubeModel.Elements.size() * sizeof(ushort), &cubeModel.Elements[0], GL_STATIC_DRAW);
 
     // Skybox
     uint skyboxVBO;
@@ -116,7 +84,7 @@ signed main() {
     uint skyboxVertexBuffer;
     glGenBuffers(1, &skyboxVertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, cubeModel.Vertices.size() * sizeof(vec3), &skyboxModel.Vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeMesh.Vertices.size() * sizeof(vec3), &skyboxModel.Vertices[0], GL_STATIC_DRAW);
 
     uint skyboxUvBuffer;
     glGenBuffers(1, &skyboxUvBuffer);
@@ -148,42 +116,17 @@ signed main() {
 
         camera.Update(deltaTime);
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeVertexBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeUvBuffer);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-        glEnableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, cubeNormalBuffer);
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeElementBuffer);
-
         phongShader.Use();
-
-        phongShader.set("projection", camera.ProjectionMatrix);
-        phongShader.set("view", camera.ViewMatrix);
-        phongShader.set("cameraPosition", camera.transform.position);
 
         pointLights[0].Use(0, phongShader);
         phongMaterial.Use(phongShader);
 
         for (uint i = 0; i < 10; i++) {
-            mat4 model;
-            model = translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = rotate(model, radians(angle), vec3(1.0f, 0.3f, 0.5f));
-
-            phongShader.set("model", model);
-
-            glDrawElements(GL_TRIANGLES, cubeModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
+            cubeModel.Draw(&cubeObjects[i], &camera);
         }
 
         /* skybox */ {
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(0);
             glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
