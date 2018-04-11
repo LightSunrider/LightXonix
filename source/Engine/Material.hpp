@@ -28,4 +28,17 @@ public:
     Texture diffuse, specular;
     float shininess;
 };
+
+class SkyboxMaterial : public IMaterial {
+public:
+    SkyboxMaterial(Texture skybox) : skybox(skybox) {}
+
+    virtual ~SkyboxMaterial() = default;
+
+    void Use(Shader &shader) override {
+        shader.set("skybox", 0, skybox);
+    }
+
+    Texture skybox;
+};
 }
