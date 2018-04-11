@@ -146,10 +146,10 @@ signed main() {
             model = translate(model, camera.transform.position);
             model = scale(model, vec3(500.0f, 500.0f, 500.0f));
 
-            skyboxShader.set("Model", model);
-            skyboxShader.set("Projection", camera.ProjectionMatrix);
-            skyboxShader.set("View", camera.ViewMatrix);
-            skyboxShader.set("Texture", 0, skyboxTexture);
+            skyboxShader.set("model", model);
+            skyboxShader.set("projection", camera.ProjectionMatrix);
+            skyboxShader.set("view", camera.ViewMatrix);
+            skyboxShader.set("skybox", 0, skyboxTexture);
 
             glDrawElements(GL_TRIANGLES, skyboxModel.Elements.size(), GL_UNSIGNED_SHORT, nullptr);
         }

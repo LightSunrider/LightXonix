@@ -2,10 +2,10 @@
 
 in vec2 Uv;
 
-out vec4 Color;
+out vec3 Color;
 
-uniform sampler2D Texture;
+uniform sampler2D skybox;
 
 void main() {
-    Color = texture(Texture, Uv);
+    Color = texture(skybox, Uv).rgb;
 }
