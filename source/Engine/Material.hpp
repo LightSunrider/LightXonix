@@ -7,23 +7,31 @@ namespace le {
 
 class IMaterial {
 public:
-    virtual void Use(Shader &shader) = 0;
+    virtual void Use() = 0;
+    virtual Shader* GetShader() = 0;
 
     virtual ~IMaterial() = default;
 };
 
 class PhongMaterial : public IMaterial {
 public:
-    PhongMaterial(Texture diffuse, Texture specular, float shininess)
-        : diffuse(diffuse), specular(specular), shininess(shininess) {}
+    PhongMaterial(Shader shader, Texture diffuse, Texture specular, float shininess)
+        : shader(shader), diffuse(diffuse), specular(specular), shininess(shininess) {}
 
     virtual ~PhongMaterial() = default;
 
-    void Use(Shader &shader) override {
+    void Use() override {
+        shader.Use();
         shader.set("material.diffuse", 0, diffuse);
         shader.set("material.specular", 1, specular);
         shader.set("material.shininess", shininess);
     }
+
+    Shader* GetShader() final {
+        return &shader;
+    }
+
+    Shader shader;
 
     Texture diffuse, specular;
     float shininess;
@@ -31,13 +39,20 @@ public:
 
 class SkyboxMaterial : public IMaterial {
 public:
-    SkyboxMaterial(Texture skybox) : skybox(skybox) {}
+    SkyboxMaterial(Shader shader, Texture skybox) : shader(shader), skybox(skybox) {}
 
-    virtual ~SkyboxMaterial() = default;
+    ~SkyboxMaterial() final = default;
 
-    void Use(Shader &shader) override {
+    void Use() final {
+        shader.Use();
         shader.set("skybox", 0, skybox);
     }
+
+    Shader* GetShader() final {
+        return &shader;
+    }
+
+    Shader shader;
 
     Texture skybox;
 };

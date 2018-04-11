@@ -18,7 +18,7 @@ public:
 
 class Model : public IRenderable {
 public:
-    Model(Mesh& mesh, Shader shader, IMaterial* material) : m_Shader(shader), m_Material(material) {
+    Model(Mesh& mesh, IMaterial* material) : m_Material(material) {
         glGenVertexArrays(1, &m_VBO);
         glBindVertexArray(m_VBO);
 
@@ -42,19 +42,19 @@ public:
     }
 
     void Draw(GameObject* object, Camera* camera) override {
-        m_Shader.Use();
-        m_Shader.set("projection", camera->ProjectionMatrix);
-        m_Shader.set("view", camera->ViewMatrix);
-        m_Shader.set("cameraPosition", camera->transform.position);
+        Shader shader = *m_Material->GetShader();
 
-        m_Material->Use(m_Shader);
+        m_Material->Use();
+
+        shader.set("projection", camera->ProjectionMatrix);
+        shader.set("view", camera->ViewMatrix);
+        shader.set("cameraPosition", camera->transform.position);
 
         glm::mat4 model;
         model = glm::translate(model, object->transform.position);
         model = model * glm::mat4_cast(object->transform.rotation);
         model = glm::scale(model, object->transform.scale);
-
-        m_Shader.set("model", model);
+        shader.set("model", model);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, m_Vertex);
@@ -82,7 +82,6 @@ private:
 
     uint m_ElementsCount;
 
-    Shader m_Shader;
     IMaterial* m_Material;
 };
 }

@@ -20,8 +20,8 @@ signed main() {
     Texture skyboxTexture("Textures/skybox.dds");
     Texture emptyTexture;
 
-    PhongMaterial phongMaterial(simpleTexture, emptyTexture, 64.0f);
-    SkyboxMaterial skyboxMaterial(skyboxTexture);
+    PhongMaterial phongMaterial(phongShader, simpleTexture, emptyTexture, 64.0f);
+    SkyboxMaterial skyboxMaterial(skyboxShader, skyboxTexture);
 
     PointLight pointLights[1];
     pointLights[0] = PointLight();
@@ -29,8 +29,8 @@ signed main() {
     Mesh cubeMesh("Models/cube.obj");
     Mesh skyboxMesh("Models/skybox.obj");
 
-    Model cubeModel(cubeMesh, phongShader, &phongMaterial);
-    Model skyboxModel(skyboxMesh, skyboxShader, &skyboxMaterial);
+    Model cubeModel(cubeMesh, &phongMaterial);
+    Model skyboxModel(skyboxMesh, &skyboxMaterial);
 
     float lastFrame = 0.0f;
     float deltaTime = 0.0f;
@@ -97,7 +97,7 @@ signed main() {
         phongShader.Use();
 
         pointLights[0].Use(0, phongShader);
-        phongMaterial.Use(phongShader);
+        phongMaterial.Use();
 
         for (uint i = 0; i < 10; i++) {
             cubeModel.Draw(&cubeObjects[i], &camera);
