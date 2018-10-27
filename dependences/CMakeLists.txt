@@ -9,18 +9,15 @@ set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "")
 set(GLFW_INSTALL OFF CACHE INTERNAL "")
 
 add_subdirectory("${DEPENDENCES_PATH}/glfw")
-
 set_target_properties(glfw PROPERTIES FOLDER "Dependences")
 # ----------
 
 # glad
 add_subdirectory("${DEPENDENCES_PATH}/glad")
-
 set_target_properties(glad PROPERTIES FOLDER "Dependences")
 # ----------
 
 # glm
 add_subdirectory("${DEPENDENCES_PATH}/glm")
-
 set_target_properties(glm_dummy PROPERTIES FOLDER "Dependences")
 # ----------

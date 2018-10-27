@@ -32,7 +32,6 @@ target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} glm)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SRC_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD_INCLUDE_DIRS})
 
 source_group(TREE "${PROJECT_SRC_DIR}" PREFIX "Source" FILES ${PROJECT_SRC})
 source_group(TREE "${PROJECT_RES_DIR}" PREFIX "Resources" FILES ${PROJECT_RES})
