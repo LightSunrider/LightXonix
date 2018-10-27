@@ -14,19 +14,9 @@ set_target_properties(glfw PROPERTIES FOLDER "Dependences")
 # ----------
 
 # glad
-set(GLAD_PROFILE "core" CACHE INTERNAL "")
-set(GLAD_API "gl=3.3" CACHE INTERNAL "")
-set(GLAD_NO_LOADER ON CACHE INTERNAL "")
-set(GLAD_EXTENSIONS
-    "GL_EXT_texture_compression_s3tc"
-CACHE INTERNAL "")
-
 add_subdirectory("${DEPENDENCES_PATH}/glad")
 
 set_target_properties(glad PROPERTIES FOLDER "Dependences")
-set_target_properties(glad-generate-files PROPERTIES FOLDER "Dependences")
-
-set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
 # ----------
 
 # glm
