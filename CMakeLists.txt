@@ -15,9 +15,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_EXTENSIONS NO
 )
 
+set(PROJECT_SRC_DIR "${PROJECT_SOURCE_DIR}/source")
+set(PROJECT_RES_DIR "${PROJECT_SOURCE_DIR}/resources")
+set(PROJECT_RES_DIR_BUILD "${CMAKE_CURRENT_BINARY_DIR}/resources")
+
 add_subdirectory("source")
-add_subdirectory("resources")
 add_subdirectory("dependences")
+
+file(GLOB_RECURSE PROJECT_RES "${PROJECT_RES_DIR}/*")
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SRC})
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_RES})
@@ -26,17 +31,29 @@ target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} glm)
 
-target_include_directories(${PROJECT_NAME} PRIVATE "source/")
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SRC_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLAD_INCLUDE_DIRS})
 
-source_group(TREE "${PROJECT_SOURCE_DIR}/source" PREFIX "Source" FILES ${PROJECT_SRC})
-source_group(TREE "${PROJECT_SOURCE_DIR}/resources" PREFIX "Resources" FILES ${PROJECT_RES})
+source_group(TREE "${PROJECT_SRC_DIR}" PREFIX "Source" FILES ${PROJECT_SRC})
+source_group(TREE "${PROJECT_RES_DIR}" PREFIX "Resources" FILES ${PROJECT_RES})
 
 set_source_files_properties(${PROJECT_RES} PROPERTIES HEADER_FILE_ONLY ON)
 
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_RES_DIR} ${PROJECT_RES_DIR_BUILD} 
+    DEPENDS ${PROJECT_RES_DIR_BUILD}
+    COMMENT "symbolic link created ${PROJECT_RES_DIR} => ${PROJECT_RES_DIR_BUILD}"
+)
+
+file(GLOB_RECURSE 
+    _FORMAT_PROJECT_RES_SHADERS 
+    "${PROJECT_RES_DIR}/*.vs"
+    "${PROJECT_RES_DIR}/*.fs"
+)
+
 ClangFormatTarget(ON ${_FORMAT_PROJECT_SRC} ${_FORMAT_PROJECT_RES_SHADERS})
 
-# Other Files
 set(PROJECT_OTHER_FILES
     ".clang-format"
     ".editorconfig"
@@ -44,7 +61,6 @@ set(PROJECT_OTHER_FILES
     ".gitmodules"
     "License.md"
 )
-# ------------
 
 source_group("Other" FILES ${PROJECT_OTHER_FILES})
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_OTHER_FILES})

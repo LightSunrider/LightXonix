@@ -11,13 +11,13 @@ signed main() {
 
     Shader::PreprocSettings preprocSettings;
     preprocSettings.Definitions.insert(std::make_pair("POINT_LIGHTS", "1"));
-    preprocSettings.IncludePath = "Shaders/";
+    preprocSettings.IncludePath = "resources/Shaders/";
 
-    Shader phongShader = Shader("Shaders/PhongShader.vs", "Shaders/PhongShader.fs", preprocSettings);
-    Shader skyboxShader = Shader("Shaders/SkyboxShader.vs", "Shaders/SkyboxShader.fs", preprocSettings);
+    Shader phongShader = Shader("resources/Shaders/PhongShader.vs", "resources/Shaders/PhongShader.fs", preprocSettings);
+    Shader skyboxShader = Shader("resources/Shaders/SkyboxShader.vs", "resources/Shaders/SkyboxShader.fs", preprocSettings);
 
-    Texture simpleTexture("Textures/simple.dds");
-    Texture skyboxTexture("Textures/skybox.dds");
+    Texture simpleTexture("resources/Textures/simple.dds");
+    Texture skyboxTexture("resources/Textures/skybox.dds");
     Texture emptyTexture;
 
     PhongMaterial phongMaterial(phongShader, simpleTexture, emptyTexture, 64.0f);
@@ -26,8 +26,8 @@ signed main() {
     PointLight pointLights[1];
     pointLights[0] = PointLight();
 
-    Mesh cubeMesh("Models/cube.obj");
-    Mesh skyboxMesh("Models/skybox.obj");
+    Mesh cubeMesh("resources/Models/cube.obj");
+    Mesh skyboxMesh("resources/Models/skybox.obj");
 
     Model cubeModel(cubeMesh, &phongMaterial);
     Model skyboxModel(skyboxMesh, &skyboxMaterial);
